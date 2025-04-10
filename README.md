@@ -1,7 +1,6 @@
 # Sistema Bancário em Terminal (Python)
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)
-<img align="center" alt="Js" height="30" width="40" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg">
 ![CLI](https://img.shields.io/badge/Interface-Command%20Line-brightgreen)
 
 Um sistema bancário completo com operações CRUD, autenticação segura e persistência de dados, totalmente operacional no terminal.
