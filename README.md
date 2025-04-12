@@ -92,8 +92,8 @@ classDiagram
     ContaBancaria --> PDF : Usa para gerar faturas
     ContaBancaria "1" *-- "1" Autenticator : Composição
 
-    note for ContaBancaria "Gerencia todo o ciclo de vida\n da conta bancária:\n- Cadastro PIX\n- Cartão de crédito\n- Bloqueio/Desbloqueio\n- Validação de segurança"
-    note for PDF "Gera documentos PDF formatados:\n- Faturas detalhadas\n- Cabeçalho personalizado\n- Rodapé com numeração"
+    note for ContaBancaria "Gerencia todo o ciclo de vida  da conta bancária: - Cadastro PIX - Cartão de crédito - Bloqueio/Desbloqueio - Validação de segurança"
+    note for PDF "Gera documentos PDF formatados: - Faturas detalhadas - Cabeçalho personalizado - Rodapé com numeração"
 ```
 
 ## 🔒 Segurança
