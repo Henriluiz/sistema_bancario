@@ -37,40 +37,63 @@ Um sistema bancário completo com operações CRUD, autenticação segura e pers
 
 ```mermaid
 classDiagram
-    Autenticator <|-- ContaBancaria
-    ContaBancaria <|-- Transacao
-    ContaBancaria <|-- DataStorage
+    direction BT
     
     class Autenticator {
-        +chaves_especiais: dict
-        +chave_alf_car: dict
-        +criptografar()
-        +descriptografar()
-        +validar_senha()
-        +auth_senha()
+        <<Classe Base>>
+        # chaves_especiais: dict
+        # chave_alf_car: dict
+        + criptografar(senha: str) str
+        + descriptografar(senha_cripto: str) str
+        + validar_senha(senha: str) bool
+        + auth_senha() bool
     }
-    
+
     class ContaBancaria {
-        +contas: dict
-        +taxa_juros: float
-        +__init__()
-        +buscar_por_numero()
-        +solicitar_cartao_credito()
-        +abrir_chave_pix()
+        <<Entidade Principal>>
+        - _numero_conta: str
+        - _saldo: float
+        - _pix: str
+        - _divida_ativa: float
+        - _bloqueado: bool
+        - _credito: bool
+        + abrir_chave_pix(metodo: int, nova_chave: str) str
+        + solicitar_cartao_credito() str
+        + compra_com_credito(item: str, valor: float) str
+        + compra_com_debito(item: str, valor: float) str
+        + gerar_pdf() void
+        + bloquear_conta() str
+        + desbloquear_conta() str
     }
-    
+
     class Transacao {
-        +depositar()
-        +sacar()
-        +transferir()
-        +compra_com_credito()
-        +compra_com_debito()
+        <<Operações Financeiras>>
+        + depositar(valor: float) str
+        + transferir(destino: str, valor: float) str
+        + sacar(valor: float) str
     }
-    
+
     class DataStorage {
-        +carregar()
-        +salvar()
+        <<Persistência>>
+        + carregar() dict
+        + salvar() void
     }
+
+    class PDF {
+        <<Relatórios>>
+        + header() void
+        + footer() void
+        + fatura(numero_conta: str, registro: dict) void
+    }
+
+    Autenticator <|-- ContaBancaria : Herança
+    ContaBancaria <|-- Transacao : Herança
+    ContaBancaria <|-- DataStorage : Herança
+    ContaBancaria --> PDF : Usa para gerar faturas
+    ContaBancaria "1" *-- "1" Autenticator : Composição
+
+    note for ContaBancaria "Gerencia todo o ciclo de vida  da conta bancária: - Cadastro PIX - Cartão de crédito - Bloqueio/Desbloqueio - Validação de segurança"
+    note for PDF "Gera documentos PDF formatados: - Faturas detalhadas - Cabeçalho personalizado - Rodapé com numeração"
 ```
 
 ## 🔒 Segurança
