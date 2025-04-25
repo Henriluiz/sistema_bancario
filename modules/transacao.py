@@ -304,7 +304,22 @@ class Transacao(ContaBancaria):
         print(f"Sua dívida: {self._divida_ativa}")
         
         data, mes, ano, horario = ContaBancaria._obter_data_atual()
-        self._registro[2][f'Pagamento do {data} {mes} {ano}'] = self._divida_ativa
+        
+        contagem_enviado = 1
+        for item_ in list(self._registro[2].keys()):
+            if "ºN" in item_ and f"{data} {mes} {ano}" in item_:
+                contagem_enviado = ContaBancaria._num_trans(item_) + 1
+        
+        id = ContaBancaria._gerar_id()
+        
+        self._registro[2][f'{data} {mes} {ano}_{contagem_enviado}ºN'] = {
+            "Tipo": f"\033[1;33mPagamento dívida\033[m",
+            "Porcentagem": "100%",
+            "Valor": self._divida_ativa,
+            "Data": f"{data} {mes} {ano} - {horario}",
+            "ID": id,
+        }
+        
         self._saldo -= self._divida_ativa
         self._saldo = ContaBancaria._formatar_numeros(self._saldo)
         self._divida_ativa = 0
