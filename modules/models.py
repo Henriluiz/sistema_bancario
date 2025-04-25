@@ -7,11 +7,11 @@ import uuid
 from inspect import currentframe
 from keyboard import release, press
 import pprint
+from locale import setlocale, currency, LC_ALL
 
 from pathlib import Path
 from random import randint, choices
 from datetime import datetime
-from modules.pdf_gen import PDF
 
 class Autenticator:
     chaves_especiais = {
@@ -408,12 +408,16 @@ class ContaBancaria(Autenticator):
         cls.taxa_juros = nova_taxa
 
     @staticmethod
+    def formatar_numero(numero):
+        # Configura a localização para o Brasil
+        setlocale(LC_ALL, 'pt_BR.UTF-8')
+        # Formata como moeda (R$ 300.230,00)
+        return currency(numero, symbol=True, grouping=True)
+
+    @staticmethod
     def _formatar_numeros(*args):
         return float(round(*args, 2))
 
-    
-    
-    
     def consultar_extrato(self): # > Testado!
         """
             Consultar extrato, não retorna nada, sem necessidade de chamar esse método pelo print
@@ -549,6 +553,9 @@ class ContaBancaria(Autenticator):
         
 
     def gerar_pdf(self, debito=False):
+        # Atrasando importanção para evitar círculo de importação.
+        from modules.pdf_gen import PDF 
+        
         pdf = PDF()
         if debito:
             pdf.fatura(self._numero_conta, self._registro[1])
