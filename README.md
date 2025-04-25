@@ -35,10 +35,16 @@ Um sistema bancário completo com operações CRUD, autenticação segura e pers
 
 ## 📋 Estrutura de Classes
 
+# Estrutura do Sistema Bancário
+
+Este projeto consiste em um sistema bancário modularizado com as seguintes classes principais:
+
+# Diagrama de Classes - Sistema Bancário
+
 ```mermaid
 classDiagram
     direction BT
-    
+
     class Autenticator {
         <<Classe Base>>
         # chaves_especiais: dict
@@ -46,7 +52,7 @@ classDiagram
         + criptografar(senha: str) str
         + descriptografar(senha_cripto: str) str
         + validar_senha(senha: str) bool
-        + auth_senha() bool
+        + auth_senha(senha: str, conta: bool) bool
     }
 
     class ContaBancaria {
@@ -63,7 +69,8 @@ classDiagram
         + compra_com_debito(item: str, valor: float) str
         + gerar_pdf() void
         + bloquear_conta() str
-        + desbloquear_conta() str
+        + desbloquear_conta(senha: str) str
+        + buscar_por_numero(numero_conta: str) ContaBancaria
     }
 
     class Transacao {
@@ -92,8 +99,8 @@ classDiagram
     ContaBancaria --> PDF : Usa para gerar faturas
     ContaBancaria "1" *-- "1" Autenticator : Composição
 
-    note for ContaBancaria "Gerencia todo o ciclo de vida  da conta bancária: - Cadastro PIX - Cartão de crédito - Bloqueio/Desbloqueio - Validação de segurança"
-    note for PDF "Gera documentos PDF formatados: - Faturas detalhadas - Cabeçalho personalizado - Rodapé com numeração"
+    note for ContaBancaria "Gerencia todo o ciclo de vida  da conta bancária:\n- Cadastro PIX\n- Cartão de crédito\n- Bloqueio/Desbloqueio\n- Validação de segurança"
+    note for PDF "Gera documentos PDF formatados:\n- Faturas detalhadas\n- Cabeçalho personalizado\n- Rodapé com numeração"
 ```
 
 ## 🔒 Segurança
