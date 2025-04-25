@@ -41,6 +41,7 @@ class Transacao(ContaBancaria):
         else:
             return False
 
+    
     def transferir(self, conta_destino="", valor_de_transferencia=0.0):
         """Ao inserir um conta irá transferir o dinheiro para outra conta com uma taxa de 9%,
         ou se inserir a chave pix irá transferir o dinheiro para conta da pessoa sem taxa 
@@ -52,21 +53,7 @@ class Transacao(ContaBancaria):
         Returns:
             msg: Mensagens de retorno da situação do status de transferências
         """
-        @staticmethod
-        def _num_trans(texto):
-            numero = ''
-            for char in texto.split("_")[1]:
-                if char.isdigit():
-                    numero += char
-                else:
-                    break
-            return int(numero)
         
-        @staticmethod
-        def _gerar_id_transacao():
-            agora = datetime.now().strftime("%Y%m%d%H%M%S")  # e.g. 20250421123500
-            aleatorio = ''.join(choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=6))
-            return f"TX-{agora}-{aleatorio}"
         linha("Transferência!")
         
         # Controle de validação da Transferência
@@ -95,7 +82,6 @@ class Transacao(ContaBancaria):
         
         
         conta_encontrada, num_conta, pix = ContaBancaria._validar_conta(conta_destino)
-        
         if not conta_encontrada:
             return '\033[1;31mConta inexistente\033[m'
         
@@ -129,16 +115,16 @@ class Transacao(ContaBancaria):
         contagem_enviado = 1
         contagem_recebido = 1
         for item in list(self._registro[2].keys()):
-            if "ºN" in item and f"{conta_destino}" in item:
-                contagem_enviado = _num_trans(item) + 1
+            if "ºN" in item and f"{num_conta}" in item:
+                contagem_enviado = ContaBancaria._num_trans(item) + 1
 
         for item in list(ContaBancaria.contas[num_conta]["_registro"][2].keys()):
             if "ºN" in item and f"{self._numero_conta}" in item:
-                contagem_recebido = _num_trans(item) + 1
+                contagem_recebido = ContaBancaria._num_trans(item) + 1
                 
-        id_transicao = _gerar_id_transacao()
+        id_transicao = ContaBancaria._gerar_id()
         # Registro de transferência no Remetente
-        self._registro[2][f'{conta_destino}_{contagem_enviado}ºN'] = {
+        self._registro[2][f'{num_conta}_{contagem_enviado}ºN'] = {
             "tipo": f"Transferência via PIX" if pix else "Transferência com Taxa",
             "destino": conta_destino,
             "data": f"{data} {mes} {ano} - {horario}",
@@ -209,3 +195,176 @@ class Transacao(ContaBancaria):
         return f'\033[1;33mSaque Concluído\033[m\n'\
             f'Valor Sacado: {valor_sacado}\n'\
             f'Saldo Atual: {self._saldo}'
+            
+    def compra_com_credito(self, item="", valor_compra=0.0): # > Testado!
+        """Compre com cartão de crédito, adiantando o pagamento do item
+
+        Returns:
+            Str: Mensagem de confirmação
+        """
+        linha("Pagamento com Crédito!")
+        try:
+            saldo = self._saldo
+        except AttributeError:
+            return '\033[1;31mSua Instância não tem os dados necessário. Use ContaBancaria primeiro e cadastre todas as informações necessária lá!\033[m'
+        
+        if not self._credito:
+            return f"\033[1;31mVocê não tem o cartão de crédito, tente usa o solicitar_cartao_credito\033[m"
+
+        # Controle de Entradas
+        if not item or not valor_compra:
+            while True:
+                try:
+                    item = str(input("Digite o nome do item da compra: "))
+                    valor_compra = float(input(f'Digite o valor de {item}: '))
+                except Exception:
+                    print('\033[1;31mDigite apenas texto na primeira entrada e float na segunda!\033[m')
+                else:
+                    break
+        else:
+            try:
+                valor_compra = float(valor_compra)
+                if not isinstance(item, str) and isinstance(valor_compra, float):
+                    return "\033[1;31mDigite apenas texto no primeiro argumento e float no segundo argumento\033[m"
+            except Exception:
+                print('\033[1;31mDigite apenas texto no primeiro argumento e float no segundo argumento\033[m')
+
+        # Verificação de limite, se o valor da compra for maior que o limite, a compra será bloqueada!
+        if valor_compra > ContaBancaria.contas[self._numero_conta]["_limite_atual"] or valor_compra > self._limite_atual:
+            return f"\033[1;31mO limite foi excedido!\033[m"
+        
+        data, mes, ano, horario = ContaBancaria._obter_data_atual()
+        
+        contagem_enviado = 1
+        for item_ in list(self._registro[0].keys()):
+            if "ºN" in item_ and f"{item}" in item_:
+                contagem_enviado = ContaBancaria._num_trans(item_) + 1
+        
+        id = ContaBancaria._gerar_id()
+        
+        self._registro[0][f'{item}_{contagem_enviado}ºN'] = {
+            "Tipo": f"Compra de Crédito",
+            "Produto": item,
+            "Data": f"{data} {mes} {ano} - {horario}",
+            "Valor": valor_compra,
+            "ID": id
+        }
+
+        self._divida_ativa += valor_compra
+        
+        self._limite_atual -= valor_compra
+        
+        
+        ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
+        
+        return f'\033[1;33mCOMPRA EFETUADA COM SUCESSO\033[m\nItem: {item}\nValor: {valor_compra}\n'
+
+    def compra_com_debito(self, item="", valor_compra=0.0): # > Testado!
+        linha("Compra no Debito!")
+        try:
+            saldo = self._saldo
+        except AttributeError:
+            return '\033[1;31mSua Instância não tem os dados necessário. Use ContaBancaria primeiro e cadastre todas as informações necessária lá!\033[m'
+        
+        # Controle de Entradas
+        if not item or not valor_compra:
+            while True:
+                try:
+                    item = str(input("Digite o nome do item da compra: "))
+                    valor_compra = float(input(f'Digite o valor de {item}: '))
+                except Exception:
+                    ... # Apenas para reiniciar o loop
+                else:
+                    break
+        else:
+            try:
+                valor_compra = float(valor_compra)
+                if not isinstance(item, str) and not isinstance(valor_compra):
+                    return "\033[1;31mDigite apenas texto no primeiro argumento e float no segundo argumento\033[m"
+            except Exception:
+                return "\033[1;31mDigite apenas texto no primeiro argumento e float no segundo argumento\033[m"
+        
+        if self._saldo < valor_compra:
+            return "\033[1;31mSaldo Insuficiente!\033[m"
+        
+        
+        self._registro[1][f'{item}'] = valor_compra
+        self._saldo -= ContaBancaria.contas[self.numero_conta]["_saldo"]
+        
+        ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
+        
+        return f'\033[1;33mCOMPRA EFETUADA COM SUCESSO\033[m\nItem: {item}\nValor: {valor_compra}\nSaldo Atual: {ContaBancaria.contas[self.numero_conta]["_saldo"]}'
+    
+    def quitar_divida(self):
+        linha("Quitar Dívida!")
+        
+        if self._divida_ativa == 0.0:
+            return f'\033[1;32mNão se preocupe, você não tem nenhuma dívida.\033[m\nDívida: {self._divida_ativa}\n'
+        elif self._divida_ativa > self._saldo:
+            return '\033[1;31mSALDO INSUFICIENTE, tente usa o parcela divida.\033[m'
+        
+        print(f"Sua dívida: {self._divida_ativa}")
+        
+        data, mes, ano, horario = ContaBancaria._obter_data_atual()
+        self._registro[2][f'Pagamento do {data} {mes} {ano}'] = self._divida_ativa
+        self._saldo -= self._divida_ativa
+        self._saldo = ContaBancaria._formatar_numeros(self._saldo)
+        self._divida_ativa = 0
+    
+        self._limite_atual = self._limite
+
+        ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
+        return f'Sua dívida foi quitada, seu saldo ficou: {self._saldo}'
+    
+    def parcela_divida(self, valor=0.0):
+        linha("Parcelar dívida!")
+        
+        print(f"Sua dívida: {self._divida_ativa}")
+        # Gerenciando as ambas formas de entrada de dados
+        if not valor:
+            while True:
+                try:
+                    valor = float(input('O valor da parcela [0 - Cancelar]: '))
+                    if valor == 0.0:
+                        return "\033[1;31mCancelamento da função parcela dívida!\033[m"
+                    
+                    print(f"Confirme o valor de parcela: {valor}", end=' ')
+                    verificacao = str(input("/ [S/N]: ")).upper().startswith("S")
+                    if not verificacao:
+                        continue
+                
+                except Exception:
+                    return "\033[1;31mDigite apenas números (float)\033[m"
+                else:
+                    break
+        else:
+            try:
+                valor = float(valor)
+            except Exception:
+                return "\033[1;31mDigite apenas números (float)\033[m"
+        
+        # Requerimentos necessários
+        if self._divida_ativa == 0.0:
+            return f'\033[1;32mNão se preocupe, você não tem nenhuma dívida.\033[m\nDívida: {self._divida_ativa}\n'
+        elif valor > self._saldo:
+            return '\033[1;31mSALDO INSUFICIENTE\033[m'
+        
+        # Se o valor for igual a divida, significa que o user usou o método incorreto para operação necessário, isso corrigir esse problema, para ter um registro certo no histórico dela
+        if valor == self._divida_ativa:
+            print("Direcionando para a função quitar divida!")
+            return self.quitar_divida()
+        else:
+            data, mes, ano, horario = ContaBancaria._obter_data_atual()
+            porcentagem = (valor / self._divida_ativa) * 100
+            porcent = ContaBancaria._formatar_numeros(porcentagem)
+            
+            self._divida_ativa -= valor # Pagar dívida
+            self._saldo -= valor # Atualizar saldo
+            self._registro[2][f'Parcela do {data} {mes} {ano}, pago {porcent}% da divida'] = valor
+            
+            # Aumentando o limite_atual sem ultrapassa o limite
+            self._limite_atual = min(self._limite_atual + valor, self._limite)
+
+            ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
+            return f'Pago {porcent}% da dívida atual\nSaldo: \033[1;31m{self._saldo}\033[m\nDívida: \033[1;31m{self._divida_ativa}\033[m'
+    
