@@ -1,12 +1,5 @@
 from fpdf import FPDF
-from locale import setlocale, currency, LC_ALL
-
-
-def formatar_numero(numero):
-    # Configura a localização para o Brasil
-    setlocale(LC_ALL, 'pt_BR.UTF-8')
-    # Formata como moeda (R$ 300.230,00)
-    return currency(numero, symbol=True, grouping=True)
+from modules.models import ContaBancaria
 
 class PDF(FPDF):
     def header(self):
@@ -65,7 +58,7 @@ class PDF(FPDF):
             total += valor["Valor"]
             self.set_x(start_x)
             self.cell(largura_item, 10, valor["Produto"], border=1, align='L', fill=fill)
-            self.cell(largura_valor, 10, f"{formatar_numero(valor["Valor"])}", border=1, align='R', fill=fill)
+            self.cell(largura_valor, 10, f"{ContaBancaria.formatar_numero(valor["Valor"])}", border=1, align='R', fill=fill)
             self.ln()
             fill = not fill  # Inverte o preenchimento para a próxima linha
 
@@ -75,4 +68,4 @@ class PDF(FPDF):
         self.set_x(start_x)
         self.set_font("Arial", 'B', 12)
         self.cell(largura_item, 10, 'Total', border=1)
-        self.cell(largura_valor, 10, f"{formatar_numero(total)}", border=1, align='R')
+        self.cell(largura_valor, 10, f"{ContaBancaria.formatar_numero(total)}", border=1, align='R')
