@@ -307,15 +307,15 @@ class Transacao(ContaBancaria):
         
         contagem_enviado = 1
         for item_ in list(self._registro[2].keys()):
-            if "ºN" in item_ and f"{data} {mes} {ano}" in item_:
+            if "PAG" in item_ and "ºN" in item_ and f"{data} {mes} {ano}" in item_:
                 contagem_enviado = ContaBancaria._num_trans(item_) + 1
         
         id = ContaBancaria._gerar_id()
         
-        self._registro[2][f'{data} {mes} {ano}_{contagem_enviado}ºN'] = {
-            "Tipo": f"\033[1;33mPagamento dívida\033[m",
+        self._registro[2][f'PAG {data} {mes} {ano}_{contagem_enviado}ºN'] = {
+            "Tipo": f"Pagamento dívida",
             "Porcentagem": "100%",
-            "Valor": self._divida_ativa,
+            "Valor": ContaBancaria.formatar_numero(self._divida_ativa),
             "Data": f"{data} {mes} {ano} - {horario}",
             "ID": id,
         }
@@ -371,9 +371,23 @@ class Transacao(ContaBancaria):
             porcentagem = (valor / self._divida_ativa) * 100
             porcent = ContaBancaria._formatar_numeros(porcentagem)
             
+            contagem_enviado = 1
+            for item_ in list(self._registro[2].keys()):
+                if "PAR" in item_ and "ºN" in item_ and f"{data} {mes} {ano}" in item_:
+                    contagem_enviado = ContaBancaria._num_trans(item_) + 1
+            
+            id = ContaBancaria._gerar_id()
+            
+            self._registro[2][f'PAR {data} {mes} {ano}_{contagem_enviado}ºN'] = {
+                "Tipo": f"Parcela paga de dívida",
+                "Porcentagem": f"{porcent}% da dívida total",
+                "Valor": f"{ContaBancaria.formatar_numero(valor)} - {ContaBancaria.formatar_numero(self._divida_ativa)}",
+                "Data": f"{data} {mes} {ano} - {horario}",
+                "ID": id,
+            }
+            
             self._divida_ativa -= valor # Pagar dívida
             self._saldo -= valor # Atualizar saldo
-            self._registro[2][f'Parcela do {data} {mes} {ano}, pago {porcent}% da divida'] = valor
             
             # Aumentando o limite_atual sem ultrapassa o limite
             self._limite_atual = min(self._limite_atual + valor, self._limite)
