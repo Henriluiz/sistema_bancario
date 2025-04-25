@@ -25,22 +25,6 @@ class Transacao(ContaBancaria):
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return f"Saldo Atualizado: \033[1;33m{self._saldo}\033[m"
 
-    @staticmethod
-    def _buscado_por_transferir(mensagem_transferencia):
-        texto = f"Transferência 123.456789 para conta_destino no 01 Janeiro 2024"
-
-        # Padrão regex para capturar o número (inteiro ou decimal)
-        padrao = r"Transferência\s+(\d+\.\d+|\d+)"
-
-        # Busca pelo padrão no texto
-        match = re.search(padrao, texto)
-
-        if match:
-            numero = int(match.group(1))  # Converte para float
-            return numero
-        else:
-            return False
-
     
     def transferir(self, conta_destino="", valor_de_transferencia=0.0):
         """Ao inserir um conta irá transferir o dinheiro para outra conta com uma taxa de 9%,
@@ -243,7 +227,7 @@ class Transacao(ContaBancaria):
         id = ContaBancaria._gerar_id()
         
         self._registro[0][f'{item}_{contagem_enviado}ºN'] = {
-            "Tipo": f"Compra de Crédito",
+            "Tipo": f"Compra no Crédito",
             "Produto": item,
             "Data": f"{data} {mes} {ano} - {horario}",
             "Valor": valor_compra,
@@ -287,9 +271,23 @@ class Transacao(ContaBancaria):
         if self._saldo < valor_compra:
             return "\033[1;31mSaldo Insuficiente!\033[m"
         
+        data, mes, ano, horario = ContaBancaria._obter_data_atual()
         
-        self._registro[1][f'{item}'] = valor_compra
-        self._saldo -= ContaBancaria.contas[self.numero_conta]["_saldo"]
+        contagem_enviado = 1
+        for item_ in list(self._registro[1].keys()):
+            if "ºN" in item_ and f"{item}" in item_:
+                contagem_enviado = ContaBancaria._num_trans(item_) + 1
+        
+        id = ContaBancaria._gerar_id()
+        
+        self._registro[1][f'{item}_{contagem_enviado}ºN'] = {
+            "Tipo": f"Compra no Débito",
+            "Produto": item,
+            "Data": f"{data} {mes} {ano} - {horario}",
+            "Valor": valor_compra,
+            "ID": id
+        }
+        self._saldo -= valor_compra
         
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         
