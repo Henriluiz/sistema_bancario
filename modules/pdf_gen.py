@@ -60,17 +60,18 @@ class PDF(FPDF):
         # Dados da fatura com linhas alternadas para melhor visualização
         self.set_font("Arial", '', 12)
         fill = False  # Alterna o fundo das linhas
+        total = 0
         for item, valor in registro.items():
+            total += valor["Valor"]
             self.set_x(start_x)
-            self.cell(largura_item, 10, item, border=1, align='L', fill=fill)
-            self.cell(largura_valor, 10, f"{formatar_numero(valor)}", border=1, align='R', fill=fill)
+            self.cell(largura_item, 10, valor["Produto"], border=1, align='L', fill=fill)
+            self.cell(largura_valor, 10, f"{formatar_numero(valor["Valor"])}", border=1, align='R', fill=fill)
             self.ln()
             fill = not fill  # Inverte o preenchimento para a próxima linha
 
         self.ln(5)
 
         # Linha de total destacada (também centralizada)
-        total = sum(registro.values())
         self.set_x(start_x)
         self.set_font("Arial", 'B', 12)
         self.cell(largura_item, 10, 'Total', border=1)
