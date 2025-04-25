@@ -39,152 +39,69 @@ Um sistema bancário completo com operações CRUD, autenticação segura e pers
 
 Este projeto consiste em um sistema bancário modularizado com as seguintes classes principais:
 
-## Diagrama de Classes Simplificado
+# Diagrama de Classes - Sistema Bancário
+
+```mermaid
+classDiagram
+    direction BT
+
+    class Autenticator {
+        <<Classe Base>>
+        # chaves_especiais: dict
+        # chave_alf_car: dict
+        + criptografar(senha: str) str
+        + descriptografar(senha_cripto: str) str
+        + validar_senha(senha: str) bool
+        + auth_senha(senha: str, conta: bool) bool
+    }
+
+    class ContaBancaria {
+        <<Entidade Principal>>
+        - _numero_conta: str
+        - _saldo: float
+        - _pix: str
+        - _divida_ativa: float
+        - _bloqueado: bool
+        - _credito: bool
+        + abrir_chave_pix(metodo: int, nova_chave: str) str
+        + solicitar_cartao_credito() str
+        + compra_com_credito(item: str, valor: float) str
+        + compra_com_debito(item: str, valor: float) str
+        + gerar_pdf() void
+        + bloquear_conta() str
+        + desbloquear_conta(senha: str) str
+        + buscar_por_numero(numero_conta: str) ContaBancaria
+    }
+
+    class Transacao {
+        <<Operações Financeiras>>
+        + depositar(valor: float) str
+        + transferir(destino: str, valor: float) str
+        + sacar(valor: float) str
+    }
+
+    class DataStorage {
+        <<Persistência>>
+        + carregar() dict
+        + salvar() void
+    }
+
+    class PDF {
+        <<Relatórios>>
+        + header() void
+        + footer() void
+        + fatura(numero_conta: str, registro: dict) void
+    }
+
+    Autenticator <|-- ContaBancaria : Herança
+    ContaBancaria <|-- Transacao : Herança
+    ContaBancaria <|-- DataStorage : Herança
+    ContaBancaria --> PDF : Usa para gerar faturas
+    ContaBancaria "1" *-- "1" Autenticator : Composição
+
+    note for ContaBancaria "Gerencia todo o ciclo de vida  da conta bancária:\n- Cadastro PIX\n- Cartão de crédito\n- Bloqueio/Desbloqueio\n- Validação de segurança"
+    note for PDF "Gera documentos PDF formatados:\n- Faturas detalhadas\n- Cabeçalho personalizado\n- Rodapé com numeração"
 ```
-Autenticator  
-├─ ContaBancaria  
-   ├─ DataStorage  
-   ├─ Transacao  
-   └─ PDF (classe auxiliar)  
-```
-
----
-
-## 1. Autenticator (Módulo de Segurança)
-
-**Responsabilidade**: Criptografia de senhas e validação de segurança
-
-```python
-class Autenticator:
-    # Dicionários para substituição de caracteres
-    chaves_especiais = {...}
-    chave_alf_car = {...}
-
-    @classmethod
-    def criptografar(cls, senha)
-    @classmethod
-    def descriptografar(cls, senha_criptografada)
-    @staticmethod
-    def validar_senha(senha)
-    def auth_senha(self, senha="", conta=False)
-```
-
----
-
-## 2. ContaBancaria (Classe Principal)
-
-**Responsabilidade**: Gerenciamento central de contas bancárias
-
-```python
-class ContaBancaria(Autenticator):
-    # Principais atributos:
-    - contas (class attribute): Dicionário de todas as contas
-    - _numero_conta, _saldo, _pix, _registro, etc.
-
-    # Principais métodos:
-    def __init__(self, num_conta="")
-    def bloquear_conta(self)
-    def desbloquear_conta(self, senha="")
-    def compra_com_credito(self, item="", valor_compra=0.0)
-    def compra_com_debito(self, item="", valor_compra=0.0)
-    def solicitar_cartao_credito(self)
-    def abrir_chave_pix(self, metodo=1, nova_chave="")
-    @classmethod
-    def buscar_por_numero(cls, numero_conta)
-```
-
----
-
-## 3. DataStorage (Persistência de Dados)
-
-**Responsabilidade**: Carregar/Salvar dados em JSON com criptografia
-
-```python
-class DataStorage(ContaBancaria):
-    @staticmethod
-    def carregar()
-    @classmethod
-    def salvar(cls)
-```
-
----
-
-## 4. Transacao (Operações Financeiras)
-
-**Responsabilidade**: Gerenciar transações bancárias
-
-```python
-class Transacao(ContaBancaria):
-    def depositar(self, valor_depositar=0.0)
-    def transferir(self, conta_destino="", valor_de_transferencia=0.0)
-    def sacar(self, valor_sacado=0.0)
-```
-
----
-
-## 5. PDF (Relatórios)
-
-**Responsabilidade**: Geração de documentos financeiros
-
-```python
-class PDF(FPDF):
-    def header(self)
-    def footer(self)
-    def fatura(self, numero_conta, registro)
-```
-
----
-
-## Fluxo Principal
-
-1. **Inicialização**:
-   - Carrega dados existentes (`DataStorage.carregar()`)
-   - Cria nova conta (`ContaBancaria()`)
-
-2. **Operações**:
-   - Transações (`Transacao.transferir()`, `.depositar()`, `.sacar()`)
-   - Compras (crédito/débito)
-   - Gerenciamento de conta (bloqueio/PIX/cartão)
-
-3. **Persistência**:
-   - Salva alterações (`DataStorage.salvar()`)
-   - Gera PDFs (`PDF.fatura()`)
-
----
-
-## Dependências Principais
-
-- `fpdf`: Geração de PDFs  
-- `keyboard`: Controle de teclado (limpeza de terminal)  
-- `pprint`: Formatação de saída  
-- `locale`: Formatação monetária
-
----
-
-## Exemplo de Uso
-
-```python
-# app.py
-from modules.transacao import Transacao
-from modules.data_storage import DataStorage
-
-# Carrega dados
-print(DataStorage.carregar())
-
-# Cria conta e realiza operações
-conta = Transacao()
-conta.desbloquear_conta("SenhaSegura123!")
-conta.depositar(1500.00)
-conta.transferir("123456", 300.00)
-
-# Salva alterações
-DataStorage.salvar()
-```
-
----
-
-Esta estrutura permite uma clara separação de responsabilidades e facilita a manutenção e expansão do sistema.
-
 
 ## 🔒 Segurança
 - Todas as senhas são criptografadas antes do armazenamento
