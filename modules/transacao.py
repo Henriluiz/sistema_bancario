@@ -315,7 +315,7 @@ class Transacao(ContaBancaria):
         self._registro[2][f'PAG {data} {mes} {ano}_{contagem_enviado}ºN'] = {
             "Tipo": f"Pagamento dívida",
             "Porcentagem": "100%",
-            "Valor": ContaBancaria.formatar_numero(self._divida_ativa),
+            "Valor": ContaBancaria._numero_em_reais(self._divida_ativa),
             "Data": f"{data} {mes} {ano} - {horario}",
             "ID": id,
         }
@@ -381,7 +381,7 @@ class Transacao(ContaBancaria):
             self._registro[2][f'PAR {data} {mes} {ano}_{contagem_enviado}ºN'] = {
                 "Tipo": f"Parcela paga de dívida",
                 "Porcentagem": f"{porcent}% da dívida total",
-                "Valor": f"{ContaBancaria.formatar_numero(valor)} - {ContaBancaria.formatar_numero(self._divida_ativa)}",
+                "Valor": f"{ContaBancaria._numero_em_reais(valor)} - {ContaBancaria._numero_em_reais(self._divida_ativa)}",
                 "Data": f"{data} {mes} {ano} - {horario}",
                 "ID": id,
             }

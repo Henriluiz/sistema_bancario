@@ -408,7 +408,7 @@ class ContaBancaria(Autenticator):
         cls.taxa_juros = nova_taxa
 
     @staticmethod
-    def formatar_numero(numero):
+    def _numero_em_reais(numero):
         # Configura a localização para o Brasil
         setlocale(LC_ALL, 'pt_BR.UTF-8')
         # Formata como moeda (R$ 300.230,00)
