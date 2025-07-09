@@ -55,10 +55,10 @@ class PDF(FPDF):
         fill = False  # Alterna o fundo das linhas
         total = 0
         for item, valor in registro.items():
-            total += valor["Valor"]
+            total += ContaBancaria.str_para_float(valor)
             self.set_x(start_x)
             self.cell(largura_item, 10, valor["Produto"], border=1, align='L', fill=fill)
-            self.cell(largura_valor, 10, f"{ContaBancaria.formatar_numero(valor["Valor"])}", border=1, align='R', fill=fill)
+            self.cell(largura_valor, 10, f"{ContaBancaria._numero_em_reais(valor["Valor"])}", border=1, align='R', fill=fill)
             self.ln()
             fill = not fill  # Inverte o preenchimento para a próxima linha
 
@@ -68,4 +68,4 @@ class PDF(FPDF):
         self.set_x(start_x)
         self.set_font("Arial", 'B', 12)
         self.cell(largura_item, 10, 'Total', border=1)
-        self.cell(largura_valor, 10, f"{ContaBancaria.formatar_numero(total)}", border=1, align='R')
+        self.cell(largura_valor, 10, f"{ContaBancaria._numero_em_reais(total)}", border=1, align='R')

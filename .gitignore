@@ -156,3 +156,5 @@ cython_debug/
 
 dados.json
 fatura.pdf
+teste.py
+sistema.py

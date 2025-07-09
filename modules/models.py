@@ -174,10 +174,11 @@ class ContaBancaria(Autenticator):
                 self._bloqueado = True
                 self._divida_ativa = 0
                 self._credito = False # existência de um cartão de crédito
-                self._registro = [{},{},{}]
+                self._registro = [{},{},{},{}]
                 # {0} nome e valor gastado em um item no Crédito
                 # {1} NOME E VALOR GASTADO EM UM ITEM DEBITO
-                # {2} vezes que a divída foi pagar, sendo seguinte sintaxe: {pagamento_25_02_25: 24.0} 
+                # {2} vezes que a divída foi pagar e pagamento quitado
+                # {3} Os itens atuais na fatura! 
             ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
             
     @property
@@ -417,6 +418,11 @@ class ContaBancaria(Autenticator):
     @staticmethod
     def _formatar_numeros(*args):
         return float(round(*args, 2))
+    
+    def str_para_float(valor_str):
+        # Remove o "R$", espaços e substitui vírgula por ponto
+        valor_limpo = valor_str.replace("R$", "").strip().replace(".", "").replace(",", ".")
+        return float(valor_limpo)
 
     def consultar_extrato(self): # > Testado!
         """
@@ -633,4 +639,3 @@ def linha(mensagem):
     print("-" * len(mensagem))
     print(f"\033[1;32m{mensagem}\033[m")
     print("-" * len(mensagem))
-

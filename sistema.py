@@ -592,21 +592,21 @@ class ContaBancaria(Autenticator):
                     break
 
         if metodo == 1:
-            if re.search("^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$", string=nova_chave):
+            if re.search(r"^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$", string=nova_chave):
                 self._pix = nova_chave
                 ContaBancaria.contas[self.numero_conta]["_pix"] = nova_chave
                 return "\033[1;33mNova chave pix criada com sucesso!\033[m"
             else:
                 return "\033[1;31mChave pix com o formato incorreto!\033[m"
         elif metodo == 2:
-            if re.search("^(\+55)?\s?(\(?\d{2}\)?)?\s?9?\d{4}-?\d{4}$", string=nova_chave):
+            if re.search(r"^(\+55)?\s?(\(?\d{2}\)?)?\s?9?\d{4}-?\d{4}$", string=nova_chave):
                 self._pix = nova_chave
                 ContaBancaria.contas[self.numero_conta]["_pix"] = nova_chave
                 return "\033[1;33mNova chave pix criada com sucesso!\033[m"
             else:
                 return "\033[1;31mChave pix com o formato incorreto!\033[m"
         elif metodo == 3:
-            if re.search("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", string=nova_chave):
+            if re.search(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", string=nova_chave):
                 self._pix = nova_chave
                 ContaBancaria.contas[self.numero_conta]["_pix"] = nova_chave
                 return "\033[1;33mNova chave pix criada com sucesso!\033[m"

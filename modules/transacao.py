@@ -179,12 +179,16 @@ class Transacao(ContaBancaria):
         return f'\033[1;33mSaque Concluído\033[m\n'\
             f'Valor Sacado: {valor_sacado}\n'\
             f'Saldo Atual: {self._saldo}'
-            
-    def compra_com_credito(self, item="", valor_compra=0.0): # > Testado!
-        """Compre com cartão de crédito, adiantando o pagamento do item
+    
+    def compra_com_credito(self, item, valor_compra): # > Testado!
+        """ Uso do cartão de crédito
+
+        Args:
+            item (str): Nome do Produto ou Serviço
+            valor_compra (int): valor total do item
 
         Returns:
-            Str: Mensagem de confirmação
+            _type_: _description_
         """
         linha("Pagamento com Crédito!")
         try:
@@ -200,15 +204,15 @@ class Transacao(ContaBancaria):
             while True:
                 try:
                     item = str(input("Digite o nome do item da compra: "))
-                    valor_compra = float(input(f'Digite o valor de {item}: '))
+                    valor_compra = int(input(f'Digite o valor de {item}: R$'))
                 except Exception:
                     print('\033[1;31mDigite apenas texto na primeira entrada e float na segunda!\033[m')
                 else:
                     break
         else:
             try:
-                valor_compra = float(valor_compra)
-                if not isinstance(item, str) and isinstance(valor_compra, float):
+                valor_compra = int(valor_compra)
+                if not isinstance(item, str) and isinstance(valor_compra, int):
                     return "\033[1;31mDigite apenas texto no primeiro argumento e float no segundo argumento\033[m"
             except Exception:
                 print('\033[1;31mDigite apenas texto no primeiro argumento e float no segundo argumento\033[m')
@@ -216,6 +220,8 @@ class Transacao(ContaBancaria):
         # Verificação de limite, se o valor da compra for maior que o limite, a compra será bloqueada!
         if valor_compra > ContaBancaria.contas[self._numero_conta]["_limite_atual"] or valor_compra > self._limite_atual:
             return f"\033[1;31mO limite foi excedido!\033[m"
+        
+        valor_parcela, vezes_max = Transacao.divisao_parcelas(valor_compra)
         
         data, mes, ano, horario = ContaBancaria._obter_data_atual()
         
@@ -230,7 +236,15 @@ class Transacao(ContaBancaria):
             "Tipo": f"Compra no Crédito",
             "Produto": item,
             "Data": f"{data} {mes} {ano} - {horario}",
-            "Valor": valor_compra,
+            "Valor": f"{ContaBancaria._numero_em_reais(valor_compra)}",
+            "Parcelas": f"{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}",
+            "ID": id
+        }
+        self._registro[3][f'{item}_{contagem_enviado}ºN'] = {
+            "Tipo": f"Compra no Crédito",
+            "Produto": item,
+            "Data": f"{data} {mes} {ano} - {horario}",
+            "Parcelas": f"{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}",
             "ID": id
         }
 
@@ -284,7 +298,7 @@ class Transacao(ContaBancaria):
             "Tipo": f"Compra no Débito",
             "Produto": item,
             "Data": f"{data} {mes} {ano} - {horario}",
-            "Valor": valor_compra,
+            "Valor": f"{ContaBancaria._numero_em_reais(valor_compra)}",
             "ID": id
         }
         self._saldo -= valor_compra
@@ -315,10 +329,12 @@ class Transacao(ContaBancaria):
         self._registro[2][f'PAG {data} {mes} {ano}_{contagem_enviado}ºN'] = {
             "Tipo": f"Pagamento dívida",
             "Porcentagem": "100%",
-            "Valor": ContaBancaria._numero_em_reais(self._divida_ativa),
+            "Valor": f"{ContaBancaria._numero_em_reais(self._divida_ativa)}",
             "Data": f"{data} {mes} {ano} - {horario}",
             "ID": id,
         }
+        
+        self._registro[3].clear()
         
         self._saldo -= self._divida_ativa
         self._saldo = ContaBancaria._formatar_numeros(self._saldo)
@@ -329,7 +345,80 @@ class Transacao(ContaBancaria):
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return f'Sua dívida foi quitada, seu saldo ficou: {self._saldo}'
     
+    def divisao_parcelas(valor, max_par=12):
+        """ Essa função controlará a divisão das parcelas, como valor e quantidade máxima de parcelas que será permitida por compra dependedo do valor.
+
+        Args:
+            valor (int): valor da compra.
+            max_vez (int, optional): máximo de parcelas.
+        Returns:
+            tuple: Valor da Parcela, quantidade de vezes parceladas.
+        """
+        # * Garantindo que o "valor" seja inteiro
+        try:
+            valor = int(valor)
+        except Exception:
+            return False
+        
+        # * Controle de quantidade máxima de vezes
+        if valor <= 100:
+            max_par = 1
+        elif valor >= 100 and valor <= 199:
+            max_par = 2
+        elif valor >= 200 and valor <= 499:
+            max_par = 3
+        elif valor >= 500 and valor <= 999:
+            max_par = 5
+        elif valor >= 1000 and valor <= 1999:
+            max_par = 6
+        elif valor >= 2000 and valor <= 3499:
+            max_par = 8
+        elif valor > 3500 and valor <= 4999:
+            max_par = 10
+        elif valor >= 5000 and valor <= 7500:
+            max_par = 12
+        else:
+            while True: # Permite que apenas o número máximo de parcela seja com parcelas de 400
+                est_valor_parcela = int(valor / max_par)
+                if max_par == 24: # O máximo será de 24 parcelas, em crédito puro!
+                    break
+                if est_valor_parcela > 400:
+                    max_par += 1
+                else:
+                    print(f"Preço: {est_valor_parcela}x{max_par}")
+                    break
+
+        # * A escolha do usuário sobre a quantidade de parcelas
+        while True:
+            try:
+                num_parcelas = int(input(f"Digite quantas parcelas deseja [Máximo de {max_par} parcelas]: "))
+            except KeyboardInterrupt:
+                return False
+            except Exception:
+                print("\033[1;31mDigite apenas números inteiros!\033[m")
+            else:
+                if num_parcelas > 0 and num_parcelas <= max_par:
+                    valor_parcela = round(valor / num_parcelas, 2) 
+                    print(f"\033[1;33mValor de cada parcela [{num_parcelas}x]: {ContaBancaria._numero_em_reais(valor_parcela)}\033[m")
+                    confirmar = str(input("Aperte enter ou [N - para Cancelar]: "))
+                    if len(confirmar) == 0:
+                        break
+                else:
+                    if num_parcelas > max_par:
+                        print(f"\033[1;31mO número máximo de parcelas({max_par}x) foi ultrapassado!\033[m")
+                    else:
+                        print("\033[1;31mNão é permitido usa número negativo!\033[m")
+        return valor_parcela, num_parcelas
+    
     def parcela_divida(self, valor=0.0):
+        """Parcelar divida
+
+        Args:
+            valor (float, optional): _description_. Defaults to 0.0.
+
+        Returns:
+            str: confirmação escrita
+        """
         linha("Parcelar dívida!")
         
         print(f"Sua dívida: {self._divida_ativa}")
@@ -385,6 +474,18 @@ class Transacao(ContaBancaria):
                 "Data": f"{data} {mes} {ano} - {horario}",
                 "ID": id,
             }
+            total = 0
+            print(self._registro[3])
+            for divida, detalhes in self._registro[3].items():
+                try:
+                    print(f"val: {detalhes["Valor"]}")
+                    total += ContaBancaria.str_para_float(detalhes["Valor"]) # ! Gerando erro
+                except:
+                    continue
+                
+
+                # ! Continua o processo de calcular e eliminar os itens exatos em fatura [3].
+            print(f"Total: {total}")
             
             self._divida_ativa -= valor # Pagar dívida
             self._saldo -= valor # Atualizar saldo
