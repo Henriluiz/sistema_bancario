@@ -241,8 +241,6 @@ class Transacao(ContaBancaria):
             "ID": id
         }
         
-        # ! Muda isso para { "Próxima NOV/25": {"Aqui pode fica o valor, para somar total das parcelas": {"Produto 1"}, {"Produto 2"} }}
-        data = 5
         ano = int(str(ano)[2:4])
         if data > 7:
             print("ENTREI 1")
@@ -260,7 +258,6 @@ class Transacao(ContaBancaria):
                         "ID": id
                     }
                     mes += 1
-                    print(vezes_max)
                     vezes_max -= 1
                     if mes == 13:
                         mes = 1
@@ -555,7 +552,7 @@ class Transacao(ContaBancaria):
             ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
             return f'Pago {porcent}% da dívida atual\nSaldo: \033[1;31m{self._saldo}\033[m\nDívida: \033[1;31m{self._divida_ativa}\033[m'
 
-    # def _consultar_parcelas_vezes(self, mes, ano):
-    #     ... # Pega apenas o valor da parcelas, para pagar a fatura completa, gerar um relátorio de confirmação de pagamento e mudar o nome da fatura "ATUAL" para "PASSADO" ou "ANTERIOR"
-    #     self._registro[3]
-        
+        def _consultar_parcelas_vezes(self, mes, ano):
+            ... # Pega apenas o valor da parcelas, para pagar a fatura completa, gerar um relátorio de confirmação de pagamento e mudar o nome da fatura "ATUAL" para "PASSADO" ou "ANTERIOR"
+            self._registro[3]
+            
