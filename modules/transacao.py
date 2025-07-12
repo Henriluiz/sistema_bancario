@@ -225,14 +225,9 @@ class Transacao(ContaBancaria):
         
         data, mes, ano, horario = ContaBancaria._obter_data_atual()
         
-        contagem_enviado = 1
-        for item_ in list(self._registro[0].keys()):
-            if "ºN" in item_ and f"{item}" in item_:
-                contagem_enviado = ContaBancaria._num_trans(item_) + 1
-        
         id = ContaBancaria._gerar_id()
         
-        self._registro[0][f'{item}_{contagem_enviado}ºN'] = {
+        self._registro[0][f'{item}_{id.split("-")[1]}'] = {
             "Tipo": f"Compra no Crédito",
             "Produto": item,
             "Data": f"{data} {mes} {ano} - {horario}",
@@ -401,7 +396,7 @@ class Transacao(ContaBancaria):
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return f'Sua dívida foi quitada, seu saldo ficou: {self._saldo}'
     
-    def _divisao_parcelasd(valor, max_par=12):
+    def _divisao_parcelas(valor, max_par=12):
         """ Essa função controlará a divisão das parcelas, como valor e quantidade máxima de parcelas que será permitida por compra dependedo do valor.
 
         Args:
@@ -552,7 +547,8 @@ class Transacao(ContaBancaria):
             ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
             return f'Pago {porcent}% da dívida atual\nSaldo: \033[1;31m{self._saldo}\033[m\nDívida: \033[1;31m{self._divida_ativa}\033[m'
 
-        def _consultar_parcelas_vezes(self, mes, ano):
-            ... # Pega apenas o valor da parcelas, para pagar a fatura completa, gerar um relátorio de confirmação de pagamento e mudar o nome da fatura "ATUAL" para "PASSADO" ou "ANTERIOR"
-            self._registro[3]
-            
+    # def _consultar_parcelas_vezes(self, mes, ano):
+    #     ... # Pega apenas o valor da parcelas, para pagar a fatura completa, gerar um relátorio de confirmação de pagamento e mudar o nome da fatura "ATUAL" para "PASSADO" ou "ANTERIOR"
+    #     if mes == 1:
+    #         self._registro[3][f"ATUAL {}"]
+        
