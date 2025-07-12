@@ -1,4 +1,4 @@
-from modules.models import ContaBancaria, Autenticator, linha, datetime, choices
+from modules.models import ContaBancaria, Autenticator, linha, datetime, choices, abreviar_mes
 class Transacao(ContaBancaria):
     def __init__(self):
         super().__init__()
@@ -221,7 +221,7 @@ class Transacao(ContaBancaria):
         if valor_compra > ContaBancaria.contas[self._numero_conta]["_limite_atual"] or valor_compra > self._limite_atual:
             return f"\033[1;31mO limite foi excedido!\033[m"
         
-        valor_parcela, vezes_max = Transacao.divisao_parcelas(valor_compra)
+        valor_parcela, vezes_max = Transacao._divisao_parcelas(valor_compra)
         
         data, mes, ano, horario = ContaBancaria._obter_data_atual()
         
@@ -240,18 +240,77 @@ class Transacao(ContaBancaria):
             "Parcelas": f"{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}",
             "ID": id
         }
-        self._registro[3][f'{item}_{contagem_enviado}ºN'] = {
-            "Tipo": f"Compra no Crédito",
-            "Produto": item,
-            "Data": f"{data} {mes} {ano} - {horario}",
-            "Parcelas": f"{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}",
-            "ID": id
-        }
+        
+        # ! Muda isso para { "Próxima NOV/25": {"Aqui pode fica o valor, para somar total das parcelas": {"Produto 1"}, {"Produto 2"} }}
+        data = 5
+        ano = int(str(ano)[2:4])
+        if data > 7:
+            print("ENTREI 1")
+            mes += 1 # Condição trata do próximo mês
+            while True:
+                try:
+                    if vezes_max == 0:
+                        print("SAI 2")
+                        break
+                    self._registro[3][f'PRÓXIMO {abreviar_mes(mes)}/{ano}'][f"{item}x{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}x{id}"] = {
+                        "Tipo": f"Compra no Crédito",
+                        "Produto": item,
+                        "Data": f"{data} {mes} {ano} - {horario}",
+                        "Parcelas": f"{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}",
+                        "ID": id
+                    }
+                    mes += 1
+                    print(vezes_max)
+                    vezes_max -= 1
+                    if mes == 13:
+                        mes = 1
+                        ano += 1
 
+                except KeyError:
+                    self._registro[3][f'PRÓXIMO {abreviar_mes(mes)}/{ano}'] = {}
+        
+        else:
+            while True:
+                try:
+                    self._registro[3][f'ATUAL {abreviar_mes(mes)}/{ano}'][f"{item}x{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}x{id}"] = {
+                        "Tipo": f"Compra no Crédito",
+                        "Produto": item,
+                        "Data": f"{data} {mes} {ano} - {horario}",
+                        "Parcelas": f"{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}",
+                        "ID": id
+                    }
+                    mes += 1
+                    vezes_max -= 1
+                    break
+                except KeyError:
+                    self._registro[3][f'ATUAL {abreviar_mes(mes)}/{ano}'] = {}
+                    
+            if vezes_max > 1:
+                if mes == 13:
+                    mes = 1
+                    ano += 1
+                while True:
+                    try:
+                        if vezes_max == 0:
+                            break
+                        self._registro[3][f'PRÓXIMO {abreviar_mes(mes)}/{ano}'][f"{item}x{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}x{id}"] = {
+                            "Tipo": f"Compra no Crédito",
+                            "Produto": item,
+                            "Data": f"{data} {mes} {ano} - {horario}",
+                            "Parcelas": f"{ContaBancaria._numero_em_reais(valor_parcela)}x{vezes_max}",
+                            "ID": id
+                        }
+                        mes += 1
+                        vezes_max -= 1
+                        if mes == 13:
+                            mes = 1
+                            ano += 1
+                    except KeyError:
+                        self._registro[3][f"PRÓXIMO {abreviar_mes(mes)}/{ano}"] = {}
+                        
         self._divida_ativa += valor_compra
         
         self._limite_atual -= valor_compra
-        
         
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         
@@ -345,7 +404,7 @@ class Transacao(ContaBancaria):
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return f'Sua dívida foi quitada, seu saldo ficou: {self._saldo}'
     
-    def divisao_parcelas(valor, max_par=12):
+    def _divisao_parcelasd(valor, max_par=12):
         """ Essa função controlará a divisão das parcelas, como valor e quantidade máxima de parcelas que será permitida por compra dependedo do valor.
 
         Args:
@@ -410,11 +469,11 @@ class Transacao(ContaBancaria):
                         print("\033[1;31mNão é permitido usa número negativo!\033[m")
         return valor_parcela, num_parcelas
     
-    def parcela_divida(self, valor=0.0):
-        """Parcelar divida
-
+    def parcela_divida(self, valor):
+        """Pagar dívida
+        
         Args:
-            valor (float, optional): _description_. Defaults to 0.0.
+            valor (int, optional): _description_. Defaults to 0.0.
 
         Returns:
             str: confirmação escrita
@@ -426,7 +485,7 @@ class Transacao(ContaBancaria):
         if not valor:
             while True:
                 try:
-                    valor = float(input('O valor da parcela [0 - Cancelar]: '))
+                    valor = int(input('O valor da parcela [0 - Cancelar]: '))
                     if valor == 0.0:
                         return "\033[1;31mCancelamento da função parcela dívida!\033[m"
                     
@@ -436,14 +495,14 @@ class Transacao(ContaBancaria):
                         continue
                 
                 except Exception:
-                    return "\033[1;31mDigite apenas números (float)\033[m"
+                    return "\033[1;31mDigite apenas números (int)\033[m"
                 else:
                     break
         else:
             try:
-                valor = float(valor)
+                valor = int(valor)
             except Exception:
-                return "\033[1;31mDigite apenas números (float)\033[m"
+                return "\033[1;31mDigite apenas números (int)\033[m"
         
         # Requerimentos necessários
         if self._divida_ativa == 0.0:
@@ -452,7 +511,7 @@ class Transacao(ContaBancaria):
             return '\033[1;31mSALDO INSUFICIENTE\033[m'
         
         # Se o valor for igual a divida, significa que o user usou o método incorreto para operação necessário, isso corrigir esse problema, para ter um registro certo no histórico dela
-        if valor == self._divida_ativa:
+        if valor >= self._divida_ativa:
             print("Direcionando para a função quitar divida!")
             return self.quitar_divida()
         else:
@@ -495,4 +554,8 @@ class Transacao(ContaBancaria):
 
             ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
             return f'Pago {porcent}% da dívida atual\nSaldo: \033[1;31m{self._saldo}\033[m\nDívida: \033[1;31m{self._divida_ativa}\033[m'
-    
+
+    # def _consultar_parcelas_vezes(self, mes, ano):
+    #     ... # Pega apenas o valor da parcelas, para pagar a fatura completa, gerar um relátorio de confirmação de pagamento e mudar o nome da fatura "ATUAL" para "PASSADO" ou "ANTERIOR"
+    #     self._registro[3]
+        

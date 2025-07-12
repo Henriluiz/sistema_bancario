@@ -173,12 +173,12 @@ class ContaBancaria(Autenticator):
                 self._senha = senha
                 self._bloqueado = True
                 self._divida_ativa = 0
-                self._credito = False # existência de um cartão de crédito
+                self._credito = False # Existência de um cartão de crédito
                 self._registro = [{},{},{},{}]
                 # {0} nome e valor gastado em um item no Crédito
                 # {1} NOME E VALOR GASTADO EM UM ITEM DEBITO
-                # {2} vezes que a divída foi pagar e pagamento quitado
-                # {3} Os itens atuais na fatura! 
+                # {2} qual parcelas foram pagos e pagamento quitado 
+                # {3} Faturas anteriores, passadas e futura (Virada de cartão dia 7)
             ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
             
     @property
@@ -639,3 +639,31 @@ def linha(mensagem):
     print("-" * len(mensagem))
     print(f"\033[1;32m{mensagem}\033[m")
     print("-" * len(mensagem))
+
+def abreviar_mes(num_mes):
+    if num_mes == 1:
+        return "JAN"
+    elif num_mes == 2:
+        return "FEV"
+    elif num_mes == 3:
+        return "MAR"
+    elif num_mes == 4:
+        return "ABR"
+    elif num_mes == 5:
+        return "MAI"
+    elif num_mes == 6:
+        return "JUN"
+    elif num_mes == 7:
+        return "JUL"
+    elif num_mes == 8:
+        return "AGO"
+    elif num_mes == 9:
+        return "SET"
+    elif num_mes == 10:
+        return "OUT"
+    elif num_mes == 11:
+        return "NOV"
+    elif num_mes == 12:
+        return "DEZ"
+    else:
+        return "Número de mês inválido"
