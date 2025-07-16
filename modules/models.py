@@ -135,7 +135,7 @@ class ContaBancaria(Autenticator):
         while True:
             try:
                 # num_conta = int(input('Digite o número da conta [Conta nova/Antiga]: ')) # Validando!
-                num_conta = 4
+                num_conta = 5
             except KeyboardInterrupt: # Opção para o usuário cancelar esse login, deixando claro que terá erros se usa essa instância,
             # pois não foi criada.
                 print('\n\033[1;31mNão Use Essa Instância, Retornará ERR0!\033[m')
@@ -409,11 +409,27 @@ class ContaBancaria(Autenticator):
         cls.taxa_juros = nova_taxa
 
     @staticmethod
-    def _numero_em_reais(numero):
+    def _numero_em_reais(numero:int|float):
         # Configura a localização para o Brasil
         setlocale(LC_ALL, 'pt_BR.UTF-8')
         # Formata como moeda (R$ 300.230,00)
         return currency(numero, symbol=True, grouping=True)
+    
+    def _reais_em_numero(valor_str):
+        """Número com essa formatação (R$ 300.230,00) e transforma em: 300230.00
+        para facilitar contas matématicas.
+
+        Args:
+            valor_str (str): Valor com esse padrão R$ 300.230,00
+
+        Returns:
+            str: Valor com a seguinte formatação (300230.00)
+        """
+        # Remove "R$", espaços e pontos dos milhares
+        valor_str = valor_str.replace('R$', '').replace('.', '').replace(' ', '').replace(',','.')
+        # Converte para inteiro
+        return valor_str
+
 
     @staticmethod
     def _formatar_numeros(*args):
@@ -640,7 +656,7 @@ def linha(mensagem):
     print(f"\033[1;32m{mensagem}\033[m")
     print("-" * len(mensagem))
 
-def abreviar_mes(num_mes):
+def abreviar_mes(num_mes:int):
     if num_mes == 1:
         return "JAN"
     elif num_mes == 2:
@@ -667,3 +683,32 @@ def abreviar_mes(num_mes):
         return "DEZ"
     else:
         return "Número de mês inválido"
+
+def numero_do_mes(abrev: str) -> int:
+    abrev = abrev.upper()
+    if abrev == "JAN":
+        return 1
+    elif abrev == "FEV":
+        return 2
+    elif abrev == "MAR":
+        return 3
+    elif abrev == "ABR":
+        return 4
+    elif abrev == "MAI":
+        return 5
+    elif abrev == "JUN":
+        return 6
+    elif abrev == "JUL":
+        return 7
+    elif abrev == "AGO":
+        return 8
+    elif abrev == "SET":
+        return 9
+    elif abrev == "OUT":
+        return 10
+    elif abrev == "NOV":
+        return 11
+    elif abrev == "DEZ":
+        return 12
+    else:
+        return -1  # ou lançar uma exceção, dependendo do uso

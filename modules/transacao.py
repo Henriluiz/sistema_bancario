@@ -1,4 +1,5 @@
-from modules.models import ContaBancaria, Autenticator, linha, datetime, choices, abreviar_mes
+from modules.models import ContaBancaria, Autenticator, linha, datetime, choices, abreviar_mes, numero_do_mes
+from decimal import Decimal
 class Transacao(ContaBancaria):
     def __init__(self):
         super().__init__()
@@ -238,7 +239,6 @@ class Transacao(ContaBancaria):
         
         ano = int(str(ano)[2:4])
         if data > 7:
-            print("ENTREI 1")
             mes += 1 # Condição trata do próximo mês
             while True:
                 try:
@@ -461,94 +461,136 @@ class Transacao(ContaBancaria):
                         print("\033[1;31mNão é permitido usa número negativo!\033[m")
         return valor_parcela, num_parcelas
     
-    def parcela_divida(self, valor):
+    def pagar_fatura(self, mes: int=0, ano: int=0):
         """Pagar dívida
         
         Args:
-            valor (int, optional): _description_. Defaults to 0.0.
+            mes (int, optional): MM - Mês da fatura que será paga.
+            ano (int, optional): AAAA - Ano da fatura que será paga.
 
         Returns:
             str: confirmação escrita
         """
         linha("Parcelar dívida!")
-        
-        print(f"Sua dívida: {self._divida_ativa}")
-        # Gerenciando as ambas formas de entrada de dados
-        if not valor:
-            while True:
-                try:
-                    valor = int(input('O valor da parcela [0 - Cancelar]: '))
-                    if valor == 0.0:
-                        return "\033[1;31mCancelamento da função parcela dívida!\033[m"
-                    
-                    print(f"Confirme o valor de parcela: {valor}", end=' ')
-                    verificacao = str(input("/ [S/N]: ")).upper().startswith("S")
-                    if not verificacao:
-                        continue
-                
-                except Exception:
-                    return "\033[1;31mDigite apenas números (int)\033[m"
-                else:
-                    break
-        else:
-            try:
-                valor = int(valor)
-            except Exception:
-                return "\033[1;31mDigite apenas números (int)\033[m"
-        
-        # Requerimentos necessários
         if self._divida_ativa == 0.0:
             return f'\033[1;32mNão se preocupe, você não tem nenhuma dívida.\033[m\nDívida: {self._divida_ativa}\n'
-        elif valor > self._saldo:
-            return '\033[1;31mSALDO INSUFICIENTE\033[m'
+        
+        if not mes:
+            print("Digite abaixo os dados necessário para pagar a fatura desejada")
+            while True:
+                mes = int(input("MÊS [MM]: "))
+                ano = int(input("ANO [AAAA]: "))
+                if mes > 12 or mes < 0:
+                    print("\033[1;31mTente novamente. Número do mês entre 1-12\033[m")
+                elif ano < 2020:
+                    print("\033[1;31mTente novamente. Com ano acima de 2020.\033[m")
+                else:
+                    break
+        
+        # print(f"Sua dívida: {self._divida_ativa}")
+        # Requerimentos necessários
+
         
         # Se o valor for igual a divida, significa que o user usou o método incorreto para operação necessário, isso corrigir esse problema, para ter um registro certo no histórico dela
-        if valor >= self._divida_ativa:
-            print("Direcionando para a função quitar divida!")
-            return self.quitar_divida()
-        else:
-            data, mes, ano, horario = ContaBancaria._obter_data_atual()
-            porcentagem = (valor / self._divida_ativa) * 100
-            porcent = ContaBancaria._formatar_numeros(porcentagem)
-            
-            contagem_enviado = 1
-            for item_ in list(self._registro[2].keys()):
-                if "PAR" in item_ and "ºN" in item_ and f"{data} {mes} {ano}" in item_:
-                    contagem_enviado = ContaBancaria._num_trans(item_) + 1
-            
-            id = ContaBancaria._gerar_id()
-            
-            self._registro[2][f'PAR {data} {mes} {ano}_{contagem_enviado}ºN'] = {
-                "Tipo": f"Parcela paga de dívida",
-                "Porcentagem": f"{porcent}% da dívida total",
-                "Valor": f"{ContaBancaria._numero_em_reais(valor)} - {ContaBancaria._numero_em_reais(self._divida_ativa)}",
-                "Data": f"{data} {mes} {ano} - {horario}",
-                "ID": id,
-            }
-            total = 0
-            print(self._registro[3])
-            for divida, detalhes in self._registro[3].items():
-                try:
-                    print(f"val: {detalhes["Valor"]}")
-                    total += ContaBancaria.str_para_float(detalhes["Valor"]) # ! Gerando erro
-                except:
-                    continue
-                
-
-                # ! Continua o processo de calcular e eliminar os itens exatos em fatura [3].
-            print(f"Total: {total}")
-            
-            self._divida_ativa -= valor # Pagar dívida
-            self._saldo -= valor # Atualizar saldo
-            
-            # Aumentando o limite_atual sem ultrapassa o limite
-            self._limite_atual = min(self._limite_atual + valor, self._limite)
-
-            ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
-            return f'Pago {porcent}% da dívida atual\nSaldo: \033[1;31m{self._saldo}\033[m\nDívida: \033[1;31m{self._divida_ativa}\033[m'
-
-    # def _consultar_parcelas_vezes(self, mes, ano):
-    #     ... # Pega apenas o valor da parcelas, para pagar a fatura completa, gerar um relátorio de confirmação de pagamento e mudar o nome da fatura "ATUAL" para "PASSADO" ou "ANTERIOR"
-    #     if mes == 1:
-    #         self._registro[3][f"ATUAL {}"]
+        data, mes, ano, horario = ContaBancaria._obter_data_atual()
+        ano = int(str(ano)[2:4])
         
+
+        id = ContaBancaria._gerar_id()
+        
+        self._registro[2][f'PAR {data} {mes} {ano} {horario}'] = {
+            "Tipo": f"Parcela paga de dívida",
+            "Valor": f"{ContaBancaria._numero_em_reais(valor)} - {ContaBancaria._numero_em_reais(self._divida_ativa)}",
+            "Data": f"{data} {mes} {ano} - {horario}",
+            "ID": id,
+        }
+        
+        self._divida_ativa -= valor # Pagar dívida
+        self._saldo -= valor # Atualizar saldo
+        
+        # Aumentando o limite_atual sem ultrapassa o limite
+        self._limite_atual = min(self._limite_atual + valor, self._limite)
+
+        ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
+        return f'Pago {porcent}% da dívida atual\nSaldo: \033[1;31m{self._saldo}\033[m\nDívida: \033[1;31m{self._divida_ativa}\033[m'
+
+    def _consultar_total_fatura(self, mes:int=0, ano:int=0, data_atual=False):
+        """Consultar o valor total da fatura solicitada
+
+        Args:
+            mes (int): Mês da fatura
+            ano (int): Ano da Fatura
+
+        Returns:
+            int: Valor completo da fatura
+        """
+        if mes and ano:
+            if mes == 1: # Pessoa, irá pagar o mês passado
+                if data_atual:
+                    ano_fatura = ano - 1
+                    ano_atual = ano
+                else:
+                    ano_fatura, ano_atual = ano
+                
+                try:
+                    fatura = self._registro[3][f"ATUAL {abreviar_mes(12)}/{ano_fatura}"]
+                except KeyError:
+                    try:
+                        notificacao = self._registro[3][f"PAGO {abreviar_mes(12)}/{ano_fatura}"]
+                    except KeyError:
+                        print("\033[1;31mFatura não encontrada.\033[m")
+                        try:
+                            notificacao_ = self._registro[3][f"PRÓXIMO {abreviar_mes(12)/ano_fatura}"]
+                        except KeyError:
+                            print("\033[1;31mFatura inexistente\033[m")
+                        else:
+                            # ! PAREI
+                            ...
+                    else:
+                        print("\033[1;31mJá consta como pago.\033[m")
+                        return False
+                self._registro[3][f"PAGO {abreviar_mes(12)}/{ano_fatura}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(12)}/{ano_fatura}")
+                self._registro[3][f"ATUAL {abreviar_mes(1)}/{ano_atual}"] = self._registro[3].pop(f"PRÓXIMO {abreviar_mes(1)}/{ano_atual}")
+            else:
+                try:
+                    fatura = self._registro[3][f"ATUAL {abreviar_mes(mes-1)}/{ano}"]
+                except KeyError as erro:
+                    try:
+                        notificacao = self._registro[3][f"PAGO {abreviar_mes(mes-1)}/{ano}"]
+                    except KeyError:
+                        print("\033[1;31mFatura não encontrada.\033[m") # ! Fazer uma função apenas para buscar faturas não pagas e registrar as não pagas, e use aqui a função para alertar o usuário se ele tem ou não conta não pagas
+                        return False
+                    else:
+                        print("\033[1;31mJá consta como pago.\033[m")
+                        return False
+                self._registro[3][f"PAGO {abreviar_mes(mes-1)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes-1)}/{ano}")
+                self._registro[3][f"ATUAL {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"PRÓXIMO {abreviar_mes(mes)}/{ano}")
+            
+            total = Decimal("0.00")
+            for item in fatura:
+                valor_item = ContaBancaria._reais_em_inteiro(item.split("x")[1])
+                total += Decimal(valor_item)
+            return total
+        else:
+            divida_total = Decimal("0.00")
+            for fatura_ in self._registro[3]:
+                if "PAGO" != fatura_:
+                    for item in self._registro[3][fatura_]:
+                        valor_item = ContaBancaria._reais_em_inteiro(item.split("x")[1])
+                        divida_total += Decimal(valor_item)
+            return divida_total
+            
+    def _consultar_fatura_nao_paga(self, mes:int, ano:int):
+        cont_atual = 0
+        atuais = []
+        for item in self._registro[3]:
+            titulo = str(item).split(" ")[0]
+            mes, ano = str(item).split(" ")[1].split("/")
+            if titulo == "ATUAL":
+                cont_atual += 1
+                atuais.append([titulo, numero_do_mes(mes), ano])
+        ordenada = sorted(atuais, key=lambda x: (int(x[2]), x[1]))
+        ordenada.remove(ordenada[-1])
+        for item in ordenada:
+            self._registro[3][f"PENDENTE {abreviar_mes(item[1])}/{item[2]}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(item[1])}/{item[2]}")
+            print(item)
