@@ -180,7 +180,8 @@ class ContaBancaria(Autenticator):
                 # {2} qual parcelas foram pagos e pagamento quitado 
                 # {3} Faturas anteriores, passadas e futura (Virada de cartão dia 7)
             ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
-            
+
+
     @property
     def numero_conta(self):
         return self._numero_conta
@@ -199,6 +200,7 @@ class ContaBancaria(Autenticator):
                 if ContaBancaria.auth_senha(self, senha, conta=valor):
                     print(f"\033[1;33mConta acessado com sucesso!!\033[m\n")
                     ContaBancaria.copiar_conta(self,num=valor)
+                    ContaBancaria._consultar_fatura_nao_paga(self)
                     return True
                 else:
                     print(f'\033[mVocê inseriu uma conta já existente, tente novamente com o número correto\033[m')
@@ -507,6 +509,27 @@ class ContaBancaria(Autenticator):
         self._credito = True
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return  f'\033[1;33mSolicitação Aprovada\033[m\nCom limite de {self._limite}'
+    
+    def _consultar_fatura_nao_paga(self):
+        cont_atual = 0
+        atuais = []
+        data, mes_atual, ano_atual, horario = ContaBancaria._obter_data_atual()
+        ano_atual_formatado = int(str(ano_atual)[2:4])
+        
+        for item in self._registro[3]:
+            titulo = str(item).split(" ")[0]
+            mes, ano = str(item).split(" ")[1].split("/")
+            if titulo != "PAGA" and titulo != "PENDENTE":
+                mes = numero_do_mes(mes)
+                if mes < mes_atual and int(ano) <= ano_atual_formatado:
+                    cont_atual += 1
+                    atuais.append([titulo, mes, ano])
+                elif (int(ano) > ano_atual_formatado and titulo == "ATUAL") or (int(ano) == ano_atual_formatado and mes > mes_atual and titulo == "ATUAL"): # Excluí Faturas que esteja por alguma causa salvas como "atual" no lugar de "PRÓXIMA"
+                    self._registro[3][f"PRÓXIMA {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes)}/{ano}")
+        ordenada = sorted(atuais, key=lambda x: (int(x[2]), x[1]))
+        for item in ordenada:
+            self._registro[3][f"PENDENTE {abreviar_mes(item[1])}/{item[2]}"] = self._registro[3].pop(f"{item[0]} {abreviar_mes(item[1])}/{item[2]}")
+            print(item)
     
     def abrir_chave_pix(self, metodo=1, nova_chave=""):
         """Abrir chave pix

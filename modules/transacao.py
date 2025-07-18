@@ -524,6 +524,7 @@ class Transacao(ContaBancaria):
         Returns:
             int: Valor completo da fatura
         """
+        encontrado = False # Caso essa váriavel não muda, o método retornará False também
         if mes and ano:
             if mes == 1: # Pessoa, irá pagar o mês passado
                 if data_atual:
@@ -536,35 +537,44 @@ class Transacao(ContaBancaria):
                     fatura = self._registro[3][f"ATUAL {abreviar_mes(12)}/{ano_fatura}"]
                 except KeyError:
                     try:
-                        notificacao = self._registro[3][f"PAGO {abreviar_mes(12)}/{ano_fatura}"]
+                        notificacao = self._registro[3][f"PAGA {abreviar_mes(12)}/{ano_fatura}"]
                     except KeyError:
                         print("\033[1;31mFatura não encontrada.\033[m")
                         try:
-                            notificacao_ = self._registro[3][f"PRÓXIMO {abreviar_mes(12)/ano_fatura}"]
+                            notificacao_ = self._registro[3][f"PRÓXIMA {abreviar_mes(12)/ano_fatura}"]
                         except KeyError:
                             print("\033[1;31mFatura inexistente\033[m")
                         else:
-                            # ! PAREI
-                            ...
+                            print("\033[1;31mEstá consta como Fatura 'Próxima'!\033[m")
                     else:
                         print("\033[1;31mJá consta como pago.\033[m")
-                        return False
-                self._registro[3][f"PAGO {abreviar_mes(12)}/{ano_fatura}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(12)}/{ano_fatura}")
-                self._registro[3][f"ATUAL {abreviar_mes(1)}/{ano_atual}"] = self._registro[3].pop(f"PRÓXIMO {abreviar_mes(1)}/{ano_atual}")
+                else:
+                    encontrado = True
+                    self._registro[3][f"PAGA {abreviar_mes(12)}/{ano_fatura}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(12)}/{ano_fatura}")
+                    self._registro[3][f"ATUAL {abreviar_mes(1)}/{ano_atual}"] = self._registro[3].pop(f"PRÓXIMA {abreviar_mes(1)}/{ano_atual}")
             else:
                 try:
                     fatura = self._registro[3][f"ATUAL {abreviar_mes(mes-1)}/{ano}"]
                 except KeyError as erro:
                     try:
-                        notificacao = self._registro[3][f"PAGO {abreviar_mes(mes-1)}/{ano}"]
+                        notificacao = self._registro[3][f"PAGA {abreviar_mes(mes-1)}/{ano}"]
                     except KeyError:
                         print("\033[1;31mFatura não encontrada.\033[m") # ! Fazer uma função apenas para buscar faturas não pagas e registrar as não pagas, e use aqui a função para alertar o usuário se ele tem ou não conta não pagas
-                        return False
+                        try:
+                            notificacao_ = self._registro[3][f"PRÓXIMA {abreviar_mes(12)/ano_fatura}"]
+                        except KeyError:
+                            print("\033[1;31mFatura inexistente\033[m")
+                        else:
+                            print("\033[1;31mEstá consta como Fatura 'Próxima'!\033[m")
                     else:
-                        print("\033[1;31mJá consta como pago.\033[m")
-                        return False
-                self._registro[3][f"PAGO {abreviar_mes(mes-1)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes-1)}/{ano}")
-                self._registro[3][f"ATUAL {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"PRÓXIMO {abreviar_mes(mes)}/{ano}")
+                        print("\033[1;31mJá consta como paga.\033[m")
+                else:
+                    encontrado = True
+                    self._registro[3][f"PAGA {abreviar_mes(mes-1)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes-1)}/{ano}")
+                    self._registro[3][f"ATUAL {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"PRÓXIMA {abreviar_mes(mes)}/{ano}")
+            
+            if not encontrado:
+                return False
             
             total = Decimal("0.00")
             for item in fatura:
@@ -572,25 +582,12 @@ class Transacao(ContaBancaria):
                 total += Decimal(valor_item)
             return total
         else:
+            # Conta para descobrir a divida total da pessoa, somando todas as faturas não pagas dela.
             divida_total = Decimal("0.00")
             for fatura_ in self._registro[3]:
-                if "PAGO" != fatura_:
+                if "PAGA" != fatura_:
                     for item in self._registro[3][fatura_]:
                         valor_item = ContaBancaria._reais_em_inteiro(item.split("x")[1])
                         divida_total += Decimal(valor_item)
             return divida_total
-            
-    def _consultar_fatura_nao_paga(self, mes:int, ano:int):
-        cont_atual = 0
-        atuais = []
-        for item in self._registro[3]:
-            titulo = str(item).split(" ")[0]
-            mes, ano = str(item).split(" ")[1].split("/")
-            if titulo == "ATUAL":
-                cont_atual += 1
-                atuais.append([titulo, numero_do_mes(mes), ano])
-        ordenada = sorted(atuais, key=lambda x: (int(x[2]), x[1]))
-        ordenada.remove(ordenada[-1])
-        for item in ordenada:
-            self._registro[3][f"PENDENTE {abreviar_mes(item[1])}/{item[2]}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(item[1])}/{item[2]}")
-            print(item)
+# ContaBancaria._consultar_fatura_nao_paga()
