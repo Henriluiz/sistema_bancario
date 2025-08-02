@@ -1,0 +1,888 @@
+{
+    "1": {
+        "_nome": "Luiz Azevedo",
+        "_pix": {
+            "pix_cpf": "¬£¢21¢1¢º||",
+            "pix_email": ",?)}#/v'-#),n!/-",
+            "pix_aleatoria": "2%#|%|#&mª^ª&m¢|2§m#£1§mº§20º0^|0ª1!"
+        },
+        "_senha": "#12£¢¬vc",
+        "_saldo": 202529.0,
+        "_divida_ativa": 27540.0,
+        "_bloqueado": false,
+        "_registro": [
+            {
+                "Avião de brinquedo": 190.0,
+                "PC gamer": 13490.0,
+                "Cinema": 90.0
+            },
+            {},
+            {
+                "2_1ºN": {
+                    "tipo": "Transferência",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:12:48",
+                    "valor": 54.5,
+                    "ID": "TX-20250421211248-CJZ6CB"
+                },
+                "2_2ºN": {
+                    "tipo": "Transferência",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:14:03",
+                    "valor": 54.5,
+                    "ID": "TX-20250421211403-R19WCT"
+                },
+                "2_3ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:49:47",
+                    "valor": 163.5,
+                    "ID": "TX-20250421214947-IPUG6Z"
+                },
+                "2_4ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:50:03",
+                    "valor": 272.5,
+                    "ID": "TX-20250421215003-51BN9V"
+                },
+                "2_5ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:50:13",
+                    "valor": 599.5,
+                    "ID": "TX-20250421215013-LRHJ3C"
+                },
+                "2_6ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:50:24",
+                    "valor": 1035.5,
+                    "ID": "TX-20250421215024-2V01HP"
+                },
+                "2_7ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:50:32",
+                    "valor": 2180.0,
+                    "ID": "TX-20250421215032-QXLUHL"
+                },
+                "2_8ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:50:59",
+                    "valor": 180.0,
+                    "ID": "TX-20250421215059-0NWTH9"
+                },
+                "2_9ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:51:19",
+                    "valor": 2020.0,
+                    "ID": "TX-20250421215119-XKNMXS"
+                },
+                "2_10ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:51:46",
+                    "valor": 50.5,
+                    "ID": "TX-20250421215146-HH7SXI"
+                },
+                "2_11ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:53:02",
+                    "valor": 50.5,
+                    "ID": "TX-20250421215302-0VHB22"
+                },
+                "2_12ºN": {
+                    "tipo": "Transferência com Taxa",
+                    "destino": "2",
+                    "data": "21 4 2025 - 21:53:58",
+                    "valor": 50.5,
+                    "ID": "TX-20250421215358-09B1XX"
+                },
+                "5db2b93c-49a8-4271-a222-b00ef36d204c_1ºN": {
+                    "tipo": "Transferência via PIX",
+                    "destino": "5db2b93c-49a8-4271-a222-b00ef36d204c",
+                    "data": "24 4 2025 - 20:58:34",
+                    "valor": 50.0,
+                    "ID": "TX-20250424205834-C2BDE3"
+                },
+                "5db2b93c-49a8-4271-a222-b00ef36d204c_2ºN": {
+                    "tipo": "Transferência via PIX",
+                    "destino": "5db2b93c-49a8-4271-a222-b00ef36d204c",
+                    "data": "24 4 2025 - 20:59:12",
+                    "valor": 50.0,
+                    "ID": "TX-20250424205912-FBTY49"
+                }
+            },
+            {}
+        ],
+        "_limite": 1616232.0,
+        "_limite_atual": 1616232.0,
+        "_credito": true
+    },
+    "2": {
+        "_nome": "Altiene Silva",
+        "_pix": {
+            "pix_aleatoria": "¬$^2^§£!m¢§#ºm¢2ª1m#222m^00%&£|$20¢!"
+        },
+        "_senha": "#12£¢¬vc",
+        "_saldo": 8400.0,
+        "_divida_ativa": 0,
+        "_bloqueado": false,
+        "_registro": [
+            {},
+            {},
+            {
+                "1_1ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:12:48",
+                    "valor": 54.5,
+                    "ID": "TX-20250421211248-CJZ6CB"
+                },
+                "1_2ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:14:03",
+                    "valor": 54.5,
+                    "ID": "TX-20250421211403-R19WCT"
+                },
+                "1_3ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:49:47",
+                    "valor": 150.0,
+                    "ID": "TX-20250421214947-IPUG6Z"
+                },
+                "1_4ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:50:03",
+                    "valor": 250.0,
+                    "ID": "TX-20250421215003-51BN9V"
+                },
+                "1_5ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:50:13",
+                    "valor": 550.0,
+                    "ID": "TX-20250421215013-LRHJ3C"
+                },
+                "1_6ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:50:24",
+                    "valor": 950.0,
+                    "ID": "TX-20250421215024-2V01HP"
+                },
+                "1_7ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:50:32",
+                    "valor": 2000.0,
+                    "ID": "TX-20250421215032-QXLUHL"
+                },
+                "1_8ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:50:59",
+                    "valor": 2000.0,
+                    "ID": "TX-20250421215059-0NWTH9"
+                },
+                "1_9ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:51:19",
+                    "valor": 2000.0,
+                    "ID": "TX-20250421215119-XKNMXS"
+                },
+                "1_10ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:51:46",
+                    "valor": 50.0,
+                    "ID": "TX-20250421215146-HH7SXI"
+                },
+                "1_11ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:53:02",
+                    "valor": 50.0,
+                    "ID": "TX-20250421215302-0VHB22"
+                },
+                "1_12ºN": {
+                    "tipo": "Transferência Recebida",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "21 4 2025 - 21:53:58",
+                    "valor": 50.0,
+                    "ID": "TX-20250421215358-09B1XX"
+                },
+                "1_13ºN": {
+                    "tipo": "PIX Recebido",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "24 4 2025 - 20:58:34",
+                    "valor": 50.0,
+                    "ID": "TX-20250424205834-C2BDE3"
+                },
+                "1_14ºN": {
+                    "tipo": "PIX Recebido",
+                    "Remetente": "1 - Luiz Azevedo",
+                    "data": "24 4 2025 - 20:59:12",
+                    "valor": 50.0,
+                    "ID": "TX-20250424205912-FBTY49"
+                }
+            },
+            {}
+        ],
+        "_credito": false
+    },
+    "3": {
+        "_nome": "Isabelly De Azevedo",
+        "_pix": {},
+        "_bloqueado": true,
+        "_saldo": 0,
+        "_senha": "#12£¢¬vc",
+        "_divida_ativa": 0,
+        "_credito": false,
+        "_registro": [
+            {},
+            {},
+            {},
+            {}
+        ]
+    },
+    "4": {
+        "_nome": "Luiz Paulino",
+        "_pix": {},
+        "_senha": "#12£¢¬vc",
+        "_saldo": 527185.0,
+        "_divida_ativa": 104989.0,
+        "_bloqueado": false,
+        "_registro": [
+            {
+                "Mesa_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Mesa",
+                    "Data": "26 4 2025 - 22:34:17",
+                    "Valor": "R$ 3.903,00",
+                    "ID": "TX-20250426223417-I3UIEI"
+                },
+                "Cadeira_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Cadeira",
+                    "Data": "26 4 2025 - 22:34:17",
+                    "Valor": "R$ 4.903,00",
+                    "ID": "TX-20250426223417-26KJAG"
+                },
+                "Óculos_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Óculos",
+                    "Data": "26 4 2025 - 22:34:17",
+                    "Valor": "R$ 3.903,00",
+                    "ID": "TX-20250426223417-O5HRDT"
+                },
+                "Ingresso F1_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Ingresso F1",
+                    "Data": "8 7 2025 - 23:10:53",
+                    "Valor": "R$ 6.903,00",
+                    "Parcelas": "575.25x12",
+                    "ID": "TX-20250708231053-I9NPZR"
+                },
+                "Ingresso F2_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Ingresso F2",
+                    "Data": "8 7 2025 - 23:11:50",
+                    "Valor": "R$ 5.903,00",
+                    "Parcelas": "R$ 491,92x12",
+                    "ID": "TX-20250708231150-9N2JTA"
+                },
+                "Ingresso F3_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Ingresso F3",
+                    "Data": "8 7 2025 - 23:16:32",
+                    "Valor": "R$ 4.903,00",
+                    "Parcelas": "R$ 490,30x10",
+                    "ID": "TX-20250708231632-KOI1LW"
+                },
+                "Ingresso F5_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Ingresso F5",
+                    "Data": "8 7 2025 - 23:25:17",
+                    "Valor": "R$ 15.903,00",
+                    "Parcelas": "R$ 662,62x24",
+                    "ID": "TX-20250708232517-FTJ9MY"
+                },
+                "Ingresso F1_2ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Ingresso F1",
+                    "Data": "10 7 2025 - 16:20:45",
+                    "Valor": "R$ 15.903,00",
+                    "Parcelas": "R$ 662,62x24",
+                    "ID": "TX-20250710162045-8BTZ4Y"
+                },
+                "Ingresso F1_3ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Ingresso F1",
+                    "Data": "11 7 2025 - 13:06:28",
+                    "Valor": "R$ 15.903,00",
+                    "Parcelas": "R$ 1.060,20x15",
+                    "ID": "TX-20250711130628-F31FY2"
+                },
+                "Ingresso F2_2ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Ingresso F2",
+                    "Data": "11 7 2025 - 13:07:17",
+                    "Valor": "R$ 15.903,00",
+                    "Parcelas": "R$ 837,00x19",
+                    "ID": "TX-20250711130717-AZPYUA"
+                },
+                "MESA_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "MESA",
+                    "Data": "11 7 2025 - 13:14:13",
+                    "Valor": "R$ 200,00",
+                    "Parcelas": "R$ 66,67x3",
+                    "ID": "TX-20250711131413-I5OVNZ"
+                },
+                "MESA_2ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "MESA",
+                    "Data": "11 7 2025 - 13:16:10",
+                    "Valor": "R$ 100,00",
+                    "Parcelas": "R$ 100,00x1",
+                    "ID": "TX-20250711131610-QNQNSO"
+                },
+                "MESA_3ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "MESA",
+                    "Data": "11 7 2025 - 13:17:50",
+                    "Valor": "R$ 100,00",
+                    "Parcelas": "R$ 100,00x1",
+                    "ID": "TX-20250711131750-HR2713"
+                },
+                "BOX de Banheiro_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "BOX de Banheiro",
+                    "Data": "11 7 2025 - 14:07:40",
+                    "Valor": "R$ 100,00",
+                    "Parcelas": "R$ 100,00x1",
+                    "ID": "TX-20250711140740-HKMWXW"
+                },
+                "ÓCULOS META_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "ÓCULOS META",
+                    "Data": "11 7 2025 - 19:25:30",
+                    "Valor": "R$ 2.100,00",
+                    "Parcelas": "R$ 300,00x7",
+                    "ID": "TX-20250711192530-3DQPIO"
+                },
+                "MOTO ELÉTRICA_1ºN": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "MOTO ELÉTRICA",
+                    "Data": "11 7 2025 - 20:12:56",
+                    "Valor": "R$ 4.100,00",
+                    "Parcelas": "R$ 410,00x10",
+                    "ID": "TX-20250711201256-IFN2DG"
+                }
+            },
+            {
+                "Mouse_1ºN": {
+                    "Tipo": "Compra no Débito",
+                    "Produto": "Mouse",
+                    "Data": "26 4 2025 - 22:34:17",
+                    "Valor": "R$ 960,00",
+                    "ID": "TX-20250426223417-JTICEQ"
+                },
+                "Luva_1ºN": {
+                    "Tipo": "Compra no Débito",
+                    "Produto": "Luva",
+                    "Data": "26 4 2025 - 22:34:17",
+                    "Valor": "R$ 140,00",
+                    "ID": "TX-20250426223417-HMSLDG"
+                }
+            },
+            {
+                "PAG 25 4 2025_1ºN": {
+                    "Tipo": "Pagamento dívida",
+                    "Porcentagem": "100%",
+                    "Valor": 11973.0,
+                    "Data": "25 4 2025 - 10:32:11",
+                    "ID": "TX-20250425103211-GLFIA6"
+                },
+                "PAG 25 4 2025_2ºN": {
+                    "Tipo": "Pagamento dívida",
+                    "Porcentagem": "100%",
+                    "Valor": 1903.0,
+                    "Data": "25 4 2025 - 10:33:16",
+                    "ID": "TX-20250425103316-ED7LYP"
+                },
+                "PAR 25 4 2025_1ºN": {
+                    "Tipo": "Parcela paga de dívida",
+                    "Porcentagem": "1.88% da dívida total",
+                    "Valor": 100.0,
+                    "Data": "25 4 2025 - 10:46:45",
+                    "ID": "TX-20250425104645-MV3SWF"
+                },
+                "PAR 25 4 2025_2ºN": {
+                    "Tipo": "Parcela paga de dívida",
+                    "Porcentagem": "1.92% da dívida total",
+                    "Valor": "100.0 - 5209.0",
+                    "Data": "25 4 2025 - 10:48:06",
+                    "ID": "TX-20250425104806-254JQ7"
+                },
+                "PAR 25 4 2025_3ºN": {
+                    "Tipo": "Parcela paga de dívida",
+                    "Porcentagem": "20.55% da dívida total",
+                    "Valor": "1050.0 - 5109.0",
+                    "Data": "25 4 2025 - 10:51:37",
+                    "ID": "TX-20250425105137-29ZB7D"
+                },
+                "PAR 25 4 2025_4ºN": {
+                    "Tipo": "Parcela paga de dívida",
+                    "Porcentagem": "25.87% da dívida total",
+                    "Valor": "R$ 1.050,00 - R$ 4.059,00",
+                    "Data": "25 4 2025 - 10:59:41",
+                    "ID": "TX-20250425105941-CHUUWT"
+                },
+                "PAR 25 4 2025_5ºN": {
+                    "Tipo": "Parcela paga de dívida",
+                    "Porcentagem": "34.9% da dívida total",
+                    "Valor": "R$ 1050,00 - R$ 3009,00",
+                    "Data": "25 4 2025 - 11:00:44",
+                    "ID": "TX-20250425110044-MBFGWR"
+                },
+                "PAG 25 4 2025_3ºN": {
+                    "Tipo": "Pagamento dívida",
+                    "Porcentagem": "100%",
+                    "Valor": "R$ 1.959,00",
+                    "Data": "25 4 2025 - 11:03:19",
+                    "ID": "TX-20250425110319-WLNMAL"
+                },
+                "PAR 6 7 2025_1ºN": {
+                    "Tipo": "Parcela paga de dívida",
+                    "Porcentagem": "5.83% da dívida total",
+                    "Valor": "R$ 1.050,00 - R$ 18.018,00",
+                    "Data": "6 7 2025 - 18:23:17",
+                    "ID": "TX-20250706182317-8LGQY6"
+                }
+            },
+            {
+                "PRÓXIMO SET/25": {
+                    "ÓCULOS METAxR$ 300,00x6xTX-20250711192530-3DQPIO": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "ÓCULOS META",
+                        "Data": "11 9 25 - 19:25:30",
+                        "Parcelas": "R$ 300,00x6",
+                        "ID": "TX-20250711192530-3DQPIO"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x8xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 9 25 - 20:12:56",
+                        "Parcelas": "R$ 410,00x8",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO OUT/25": {
+                    "ÓCULOS METAxR$ 300,00x5xTX-20250711192530-3DQPIO": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "ÓCULOS META",
+                        "Data": "11 10 25 - 19:25:30",
+                        "Parcelas": "R$ 300,00x5",
+                        "ID": "TX-20250711192530-3DQPIO"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x7xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 10 25 - 20:12:56",
+                        "Parcelas": "R$ 410,00x7",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO NOV/25": {
+                    "ÓCULOS METAxR$ 300,00x4xTX-20250711192530-3DQPIO": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "ÓCULOS META",
+                        "Data": "11 11 25 - 19:25:30",
+                        "Parcelas": "R$ 300,00x4",
+                        "ID": "TX-20250711192530-3DQPIO"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x6xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 11 25 - 20:12:56",
+                        "Parcelas": "R$ 410,00x6",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO DEZ/25": {
+                    "ÓCULOS METAxR$ 300,00x3xTX-20250711192530-3DQPIO": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "ÓCULOS META",
+                        "Data": "11 12 25 - 19:25:30",
+                        "Parcelas": "R$ 300,00x3",
+                        "ID": "TX-20250711192530-3DQPIO"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x5xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 12 25 - 20:12:56",
+                        "Parcelas": "R$ 410,00x5",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO JAN/26": {
+                    "ÓCULOS METAxR$ 300,00x2xTX-20250711192530-3DQPIO": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "ÓCULOS META",
+                        "Data": "11 1 26 - 19:25:30",
+                        "Parcelas": "R$ 300,00x2",
+                        "ID": "TX-20250711192530-3DQPIO"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x4xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 1 26 - 20:12:56",
+                        "Parcelas": "R$ 410,00x4",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO FEV/26": {
+                    "ÓCULOS METAxR$ 300,00x1xTX-20250711192530-3DQPIO": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "ÓCULOS META",
+                        "Data": "11 2 26 - 19:25:30",
+                        "Parcelas": "R$ 300,00x1",
+                        "ID": "TX-20250711192530-3DQPIO"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x3xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 2 26 - 20:12:56",
+                        "Parcelas": "R$ 410,00x3",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO MAR/26": {
+                    "MOTO ELÉTRICAxR$ 410,00x2xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 3 26 - 20:12:56",
+                        "Parcelas": "R$ 410,00x2",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO ABR/26": {
+                    "MOTO ELÉTRICAxR$ 410,00x1xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 4 26 - 20:12:56",
+                        "Parcelas": "R$ 410,00x1",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "ATUAL JUL/25": {
+                    "MESAxR$ 66,67x3": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MESA",
+                        "Data": "4 7 2025 - 13:14:13",
+                        "Parcelas": "R$ 66,67x3",
+                        "ID": "TX-20250711131413-I5OVNZ"
+                    },
+                    "MESAxR$ 100,00x1": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MESA",
+                        "Data": "4 7 2025 - 13:16:10",
+                        "Parcelas": "R$ 100,00x1",
+                        "ID": "TX-20250711131610-QNQNSO"
+                    },
+                    "MESAxR$ 100,00x1xTX-20250711131750-HR2713": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MESA",
+                        "Data": "4 7 2025 - 13:17:50",
+                        "Parcelas": "R$ 100,00x1",
+                        "ID": "TX-20250711131750-HR2713"
+                    },
+                    "BOX de BanheiroxR$ 100,00x1xTX-20250711140740-HKMWXW": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "BOX de Banheiro",
+                        "Data": "4 7 2025 - 14:07:40",
+                        "Parcelas": "R$ 100,00x1",
+                        "ID": "TX-20250711140740-HKMWXW"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x10xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 7 25 - 20:12:56",
+                        "Parcelas": "R$ 410,00x10",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                },
+                "PRÓXIMO AGO/25": {
+                    "Ingresso F1xR$ 1.060,20x15": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Ingresso F1",
+                        "Data": "11 7 2025 - 13:06:28",
+                        "Parcelas": "R$ 1.060,20x15",
+                        "ID": "TX-20250711130628-F31FY2"
+                    },
+                    "Ingresso F2xR$ 837,00x19": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Ingresso F2",
+                        "Data": "11 7 2025 - 13:07:17",
+                        "Parcelas": "R$ 837,00x19",
+                        "ID": "TX-20250711130717-AZPYUA"
+                    },
+                    "MESAxR$ 66,67x2": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MESA",
+                        "Data": "4 7 2025 - 13:14:13",
+                        "Parcelas": "R$ 66,67x2",
+                        "ID": "TX-20250711131413-I5OVNZ"
+                    },
+                    "ÓCULOS METAxR$ 300,00x7xTX-20250711192530-3DQPIO": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "ÓCULOS META",
+                        "Data": "11 8 25 - 19:25:30",
+                        "Parcelas": "R$ 300,00x7",
+                        "ID": "TX-20250711192530-3DQPIO"
+                    },
+                    "MOTO ELÉTRICAxR$ 410,00x9xTX-20250711201256-IFN2DG": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "MOTO ELÉTRICA",
+                        "Data": "5 8 25 - 20:12:56",
+                        "Parcelas": "R$ 410,00x9",
+                        "ID": "TX-20250711201256-IFN2DG"
+                    }
+                }
+            }
+        ],
+        "_limite": 286510.0,
+        "_credito": true,
+        "_limite_atual": 181521.0
+    },
+    "5": {
+        "_nome": "Paulo Souza",
+        "_pix": {
+            "pix_aleatoria": "&0%|!ª01m#%##m¢0|¬mº21&mº#¬2#§ª0&#|!"
+        },
+        "_senha": "#12£¢¬vc",
+        "_saldo": 1500.0,
+        "_divida_ativa": 11309,
+        "_bloqueado": false,
+        "_registro": [
+            {
+                "Moto quebrada_20250713164158": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Moto quebrada",
+                    "Data": "13 7 2025 - 16:41:58",
+                    "Valor": "R$ 2.203,00",
+                    "Parcelas": "R$ 440,60x5",
+                    "ID": "TX-20250713164158-LJM23J"
+                },
+                "Cadeira_20250713164209": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Cadeira",
+                    "Data": "13 7 2025 - 16:42:09",
+                    "Valor": "R$ 4.903,00",
+                    "Parcelas": "R$ 490,30x10",
+                    "ID": "TX-20250713164209-VG3RF7"
+                },
+                "Chuteira_20250715182931": {
+                    "Tipo": "Compra no Crédito",
+                    "Produto": "Chuteira",
+                    "Data": "15 7 2025 - 18:29:31",
+                    "Valor": "R$ 4.203,00",
+                    "Parcelas": "R$ 2.101,50x2",
+                    "ID": "TX-20250715182931-7LKPQ7"
+                }
+            },
+            {},
+            {},
+            {
+                "PAGO JAN/24": {
+                    "NotebooxR$ 3.200,00x10xTX-20240110123500-ZXP91K": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Notebook",
+                        "Data": "10 1 24 - 12:35:00",
+                        "Parcelas": "R$ 3.200,00x10",
+                        "ID": "TX-20240110123500-ZXP91K"
+                    }
+                },
+                "PAGO FEV/24": {
+                    "NotebooxR$ 3.200,00x9xTX-20240110123500-ZXP91K": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Notebook",
+                        "Data": "10 2 24 - 12:35:00",
+                        "Parcelas": "R$ 3.200,00x9",
+                        "ID": "TX-20240110123500-ZXP91K"
+                    },
+                    "Fone BluetoothxR$ 150,00x1xTX-20240205104511-ABC123": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Fone Bluetooth",
+                        "Data": "05 2 24 - 10:45:11",
+                        "Parcelas": "R$ 150,00x1",
+                        "ID": "TX-20240205104511-ABC123"
+                    }
+                },
+                "PAGO MAR/24": {
+                    "NotebooxR$ 3.200,00x8xTX-20240110123500-ZXP91K": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Notebook",
+                        "Data": "10 3 24 - 12:35:00",
+                        "Parcelas": "R$ 3.200,00x8",
+                        "ID": "TX-20240110123500-ZXP91K"
+                    },
+                    "Tênis esportivoxR$ 420,00x2xTX-20240312132322-RUN4ME": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Tênis esportivo",
+                        "Data": "12 3 24 - 13:23:22",
+                        "Parcelas": "R$ 420,00x2",
+                        "ID": "TX-20240312132322-RUN4ME"
+                    }
+                },
+                "ATUAL JUL/25": {
+                    "RelógioxR$ 980,00x5xTX-20250703125012-WATCH7": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Relógio",
+                        "Data": "03 7 25 - 12:50:12",
+                        "Parcelas": "R$ 980,00x5",
+                        "ID": "TX-20250703125012-WATCH7"
+                    },
+                    "Tênis esportivoxR$ 420,00x1xTX-20240312132322-RUN4ME": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Tênis esportivo",
+                        "Data": "12 7 25 - 13:23:22",
+                        "Parcelas": "R$ 420,00x1",
+                        "ID": "TX-20240312132322-RUN4ME"
+                    }
+                },
+                "PRÓXIMO JUN/25": {
+                    "RelógioxR$ 980,00x4xTX-20250703125012-WATCH7": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Relógio",
+                        "Data": "03 6 25 - 12:50:12",
+                        "Parcelas": "R$ 980,00x4",
+                        "ID": "TX-20250703125012-WATCH7"
+                    }
+                },
+                "PRÓXIMO MAI/25": {
+                    "RelógioxR$ 980,00x3xTX-20250703125012-WATCH7": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Relógio",
+                        "Data": "03 5 25 - 12:50:12",
+                        "Parcelas": "R$ 980,00x3",
+                        "ID": "TX-20250703125012-WATCH7"
+                    },
+                    "CafeteiraxR$ 320,00x2xTX-20250502111200-COFFEE": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Cafeteira",
+                        "Data": "02 5 25 - 11:12:00",
+                        "Parcelas": "R$ 320,00x2",
+                        "ID": "TX-20250502111200-COFFEE"
+                    }
+                },
+                "PRÓXIMO AGO/25": {
+                    "RelógioxR$ 980,00x6xTX-20250703125012-WATCH7": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Relógio",
+                        "Data": "03 8 25 - 12:50:12",
+                        "Parcelas": "R$ 980,00x6",
+                        "ID": "TX-20250703125012-WATCH7"
+                    },
+                    "SkatexR$ 850,00x3xTX-20250815101718-SK8TR": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Skate",
+                        "Data": "15 8 25 - 10:17:18",
+                        "Parcelas": "R$ 850,00x3",
+                        "ID": "TX-20250815101718-SK8TR"
+                    }
+                },
+                "ATUAL NOV/25": {
+                    "SkatexR$ 850,00x1xTX-20250815101718-SK8TR": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Skate",
+                        "Data": "15 11 25 - 10:17:18",
+                        "Parcelas": "R$ 850,00x1",
+                        "ID": "TX-20250815101718-SK8TR"
+                    }
+                },
+                "PRÓXIMO MAR/26": {
+                    "Curso OnlinexR$ 1.500,00x6xTX-20260302090000-STUDY01": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Curso Online",
+                        "Data": "02 3 26 - 09:00:00",
+                        "Parcelas": "R$ 1.500,00x6",
+                        "ID": "TX-20260302090000-STUDY01"
+                    }
+                },
+                "PRÓXIMO ABR/26": {
+                    "Curso OnlinexR$ 1.500,00x5xTX-20260302090000-STUDY01": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Curso Online",
+                        "Data": "02 4 26 - 09:00:00",
+                        "Parcelas": "R$ 1.500,00x5",
+                        "ID": "TX-20260302090000-STUDY01"
+                    }
+                },
+                "PRÓXIMO JUL/26": {
+                    "Curso OnlinexR$ 1.500,00x2xTX-20260302090000-STUDY01": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Curso Online",
+                        "Data": "02 7 26 - 09:00:00",
+                        "Parcelas": "R$ 1.500,00x2",
+                        "ID": "TX-20260302090000-STUDY01"
+                    }
+                },
+                "PRÓXIMO AGO/26": {
+                    "Curso OnlinexR$ 1.500,00x1xTX-20260302090000-STUDY01": {
+                        "Tipo": "Compra no Crédito",
+                        "Produto": "Curso Online",
+                        "Data": "02 8 26 - 09:00:00",
+                        "Parcelas": "R$ 1.500,00x1",
+                        "ID": "TX-20260302090000-STUDY01"
+                    }
+                }
+            }
+        ],
+        "_limite": 12000.0,
+        "_credito": true,
+        "_limite_atual": 691.0
+    },
+    "6": {
+        "_nome": "Larissa Souza",
+        "_pix": {},
+        "_saldo": 0,
+        "_senha": "#12£¢¬vc",
+        "_bloqueado": false,
+        "_divida_ativa": 0,
+        "_credito": false,
+        "_registro": [
+            {},
+            {},
+            {},
+            {}
+        ]
+    },
+    "7": {
+        "_nome": "João Henrique",
+        "_pix": {},
+        "_saldo": 5000.0,
+        "_senha": "#12£¢¬vc",
+        "_bloqueado": false,
+        "_divida_ativa": 0,
+        "_credito": true,
+        "_registro": [
+            {},
+            {},
+            {},
+            {}
+        ],
+        "_limite": 40000.0,
+        "_limite_atual": 40000.0
+    }
+}
