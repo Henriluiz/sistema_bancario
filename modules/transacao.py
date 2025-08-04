@@ -385,7 +385,13 @@ class Transacao(ContaBancaria):
             "ID": id,
         }
         
-        self._registro[3].clear()
+        # Pagando todas as faturas pendentes/próximas e atual.
+        for item in self._registro[3]:
+            titulo = str(item).split(" ")[0]
+            mes, ano = str(item).split(" ")[1].split("/")
+            if titulo == "PENDENTE" or titulo == "PRÓXIMO":
+                self._registro[3][f"PAGA {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"{titulo} {abreviar_mes(mes)}/{ano}")
+
         
         self._saldo -= self._divida_ativa
         self._saldo = ContaBancaria._formatar_numeros(self._saldo)
@@ -512,7 +518,7 @@ class Transacao(ContaBancaria):
         self._limite_atual = min(self._limite_atual + valor, self._limite)
 
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
-        return f'Pago {porcent}% da dívida atual\nSaldo: \033[1;31m{self._saldo}\033[m\nDívida: \033[1;31m{self._divida_ativa}\033[m'
+        return f"Saldo: \033[1;31m{self._saldo}\033[m\nDívida total: \033[1;31m{self._divida_ativa}\033[m"
 
 # ContaBancaria._consultar_total_fatura()
 # ContaBancaria._consultar_fatura_nao_paga()

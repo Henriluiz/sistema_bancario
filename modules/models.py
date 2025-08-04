@@ -596,7 +596,7 @@ class ContaBancaria(Autenticator):
             Ex: Fatura nov/9999 - Pendete 
             Uma fatura futura salva como pendente e etc..
 
-            Não retorna nada, já salva tudo atrás do Self
+            Não retorna nada, já salva tudo através do Self
         """
         cont_atual = 0
         atuais = []
@@ -617,12 +617,13 @@ class ContaBancaria(Autenticator):
                     atuais.append([titulo, mes, ano])
                 elif (int(ano) > ano_atual_formatado and titulo == "ATUAL") or (int(ano) == ano_atual_formatado and mes > mes_atual and titulo == "ATUAL"): # Excluí Faturas que esteja por alguma causa salvas como "atual" no lugar de "PRÓXIMA"
                     self._registro[3][f"PRÓXIMA {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes)}/{ano}")
-        if atuais:
+        
+        if atuais: # Forma de poupar processamento
             ordenada = sorted(atuais, key=lambda x: (int(x[2]), x[1]))
             for item in ordenada:
                 self._registro[3][f"PENDENTE {abreviar_mes(item[1])}/{item[2]}"] = self._registro[3].pop(f"{item[0]} {abreviar_mes(item[1])}/{item[2]}")
-                return True # |Contém fatura pendente - não pago|
-        
+                pendente.append(f"PENDENTE {abreviar_mes(item[1])}/{item[2]}")
+
         if visualizar_npago:
             print(fatura for fatura in pendente)
             return True # |Contém fatura pendente - não pago|
