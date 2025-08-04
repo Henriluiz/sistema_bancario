@@ -12,6 +12,7 @@ from locale import setlocale, currency, LC_ALL
 from pathlib import Path
 from random import randint, choices
 from datetime import datetime
+from decimal import Decimal
 
 class Autenticator:
     chaves_especiais = {
@@ -510,26 +511,122 @@ class ContaBancaria(Autenticator):
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return  f'\033[1;33mSolicitação Aprovada\033[m\nCom limite de {self._limite}'
     
-    def _consultar_fatura_nao_paga(self):
+    def _consultar_total_fatura(self, mes:int=0, ano:int=0, data_atual=False):
+        """Consultar o valor total da fatura solicitada
+
+        Args:
+            mes (int): Mês da fatura
+            ano (int): Ano da Fatura
+
+        Returns:
+            int: Valor completo da fatura
+        """
+        encontrado = False # Caso essa váriavel não muda, o método retornará False também
+        if mes and ano:
+            if mes == 1: # Pessoa, irá pagar o mês passado
+                if data_atual:
+                    ano_fatura = ano - 1
+                    ano_atual = ano
+                else:
+                    ano_fatura, ano_atual = ano
+                
+                try:
+                    fatura = self._registro[3][f"ATUAL {abreviar_mes(12)}/{ano_fatura}"]
+                except KeyError:
+                    try:
+                        notificacao = self._registro[3][f"PAGA {abreviar_mes(12)}/{ano_fatura}"]
+                    except KeyError:
+                        print("\033[1;31mFatura não encontrada.\033[m")
+                        try:
+                            notificacao_ = self._registro[3][f"PRÓXIMA {abreviar_mes(12)/ano_fatura}"]
+                        except KeyError:
+                            print("\033[1;31mFatura inexistente\033[m")
+                        else:
+                            print("\033[1;31mEstá consta como Fatura 'Próxima'!\033[m")
+                    else:
+                        print("\033[1;31mJá consta como pago.\033[m")
+                else:
+                    encontrado = True
+                    self._registro[3][f"PAGA {abreviar_mes(12)}/{ano_fatura}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(12)}/{ano_fatura}")
+                    self._registro[3][f"ATUAL {abreviar_mes(1)}/{ano_atual}"] = self._registro[3].pop(f"PRÓXIMA {abreviar_mes(1)}/{ano_atual}")
+            else:
+                try:
+                    fatura = self._registro[3][f"ATUAL {abreviar_mes(mes-1)}/{ano}"]
+                except KeyError as erro:
+                    try:
+                        notificacao = self._registro[3][f"PAGA {abreviar_mes(mes-1)}/{ano}"]
+                    except KeyError:
+                        print("\033[1;31mFatura não encontrada.\033[m")
+                        ContaBancaria._consultar_fatura_nao_paga()
+                        # ! Fazer uma função apenas para buscar faturas não pagas e registrar as não pagas, e use aqui a função para alertar o usuário se ele tem ou não conta não pagas
+                        try:
+                            notificacao_ = self._registro[3][f"PRÓXIMA {abreviar_mes(12)/ano_fatura}"]
+                        except KeyError:
+                            print("\033[1;31mFatura inexistente\033[m")
+                        else:
+                            print("\033[1;31mEstá consta como Fatura 'Próxima'!\033[m")
+                    else:
+                        print("\033[1;31mJá consta como paga.\033[m")
+                else:
+                    encontrado = True
+                    self._registro[3][f"PAGA {abreviar_mes(mes-1)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes-1)}/{ano}")
+                    self._registro[3][f"ATUAL {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"PRÓXIMA {abreviar_mes(mes)}/{ano}")
+            
+            if not encontrado:
+                return False
+            
+            total = Decimal("0.00")
+            for item in fatura:
+                valor_item = ContaBancaria._reais_em_inteiro(item.split("x")[1])
+                total += Decimal(valor_item)
+            return total
+        else:
+            # Conta para descobrir a divida total da pessoa, somando todas as faturas não pagas dela.
+            divida_total = Decimal("0.00")
+            for fatura_ in self._registro[3]:
+                if "PAGA" != fatura_:
+                    for item in self._registro[3][fatura_]:
+                        valor_item = ContaBancaria._reais_em_inteiro(item.split("x")[1])
+                        divida_total += Decimal(valor_item)
+            return divida_total
+    
+    def _consultar_fatura_nao_paga(self, visualizar_npago=False):
+        """ Método que analisa fatura por fatura, atrás de erros de salvamento.
+
+            Ex: Fatura nov/9999 - Pendete 
+            Uma fatura futura salva como pendente e etc..
+
+            Não retorna nada, já salva tudo atrás do Self
+        """
         cont_atual = 0
         atuais = []
+        pendente = []
         data, mes_atual, ano_atual, horario = ContaBancaria._obter_data_atual()
         ano_atual_formatado = int(str(ano_atual)[2:4])
         
+        # ! Em processo
         for item in self._registro[3]:
             titulo = str(item).split(" ")[0]
             mes, ano = str(item).split(" ")[1].split("/")
+            if titulo == "PENDENTE":
+                pendente.append(f"{titulo} {mes}/{ano}")
             if titulo != "PAGA" and titulo != "PENDENTE":
                 mes = numero_do_mes(mes)
-                if mes < mes_atual and int(ano) <= ano_atual_formatado:
+                if mes < mes_atual and int(ano) <= ano_atual_formatado: # Alterar Fatura consta como "Atual" só que muito passado
                     cont_atual += 1
                     atuais.append([titulo, mes, ano])
                 elif (int(ano) > ano_atual_formatado and titulo == "ATUAL") or (int(ano) == ano_atual_formatado and mes > mes_atual and titulo == "ATUAL"): # Excluí Faturas que esteja por alguma causa salvas como "atual" no lugar de "PRÓXIMA"
                     self._registro[3][f"PRÓXIMA {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes)}/{ano}")
-        ordenada = sorted(atuais, key=lambda x: (int(x[2]), x[1]))
-        for item in ordenada:
-            self._registro[3][f"PENDENTE {abreviar_mes(item[1])}/{item[2]}"] = self._registro[3].pop(f"{item[0]} {abreviar_mes(item[1])}/{item[2]}")
-            print(item)
+        if atuais:
+            ordenada = sorted(atuais, key=lambda x: (int(x[2]), x[1]))
+            for item in ordenada:
+                self._registro[3][f"PENDENTE {abreviar_mes(item[1])}/{item[2]}"] = self._registro[3].pop(f"{item[0]} {abreviar_mes(item[1])}/{item[2]}")
+                return True # |Contém fatura pendente - não pago|
+        
+        if visualizar_npago:
+            print(fatura for fatura in pendente)
+            return True # |Contém fatura pendente - não pago|
+        
     
     def abrir_chave_pix(self, metodo=1, nova_chave=""):
         """Abrir chave pix
