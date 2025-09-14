@@ -1,4 +1,4 @@
-from modules.models import ContaBancaria, Autenticator, linha, datetime, choices, abreviar_mes, numero_do_mes
+from models import ContaBancaria, Autenticator, linha, datetime, choices, abreviar_mes, numero_do_mes, Decimal
 
 class Transacao(ContaBancaria):
     def __init__(self):
@@ -96,7 +96,7 @@ class Transacao(ContaBancaria):
         
         data, mes, ano, horario = ContaBancaria._obter_data_atual()
         
-        # processo de verificar se o user já realizou alguma transferência para esse destinatário;
+        # Processo de verificar se o user já realizou alguma transferência para esse destinatário;
         contagem_enviado = 1
         contagem_recebido = 1
         for item in list(self._registro[2].keys()):
@@ -300,9 +300,9 @@ class Transacao(ContaBancaria):
                     except KeyError:
                         self._registro[3][f"PRÓXIMO {abreviar_mes(mes)}/{ano}"] = {}
                         
-        self._divida_ativa += valor_compra
+        self._divida_ativa += Decimal(valor_compra)
         
-        self._limite_atual -= valor_compra
+        self._limite_atual -= Decimal(valor_compra)
         
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         
@@ -393,16 +393,16 @@ class Transacao(ContaBancaria):
                 self._registro[3][f"PAGA {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"{titulo} {abreviar_mes(mes)}/{ano}")
 
         
-        self._saldo -= self._divida_ativa
-        self._saldo = ContaBancaria._formatar_numeros(self._saldo)
-        self._divida_ativa = 0
+        self._saldo -= Decimal(self._divida_ativa)
+        self._saldo = Decimal(ContaBancaria._formatar_numeros(self._saldo))
+        self._divida_ativa = Decimal(0)
     
         self._limite_atual = self._limite
 
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return f'Sua dívida foi quitada, seu saldo ficou: {self._saldo}'
     
-    def _divisao_parcelas(valor, max_par=12):
+    def _divisao_parcelas(valor, max_par):
         """ Essa função controlará a divisão das parcelas, como valor e quantidade máxima de parcelas que será permitida por compra dependedo do valor.
 
         Args:
@@ -417,54 +417,55 @@ class Transacao(ContaBancaria):
         except Exception:
             return False
         
-        # * Controle de quantidade máxima de vezes
-        if valor <= 100:
-            max_par = 1
-        elif valor >= 100 and valor <= 199:
-            max_par = 2
-        elif valor >= 200 and valor <= 499:
-            max_par = 3
-        elif valor >= 500 and valor <= 999:
-            max_par = 5
-        elif valor >= 1000 and valor <= 1999:
-            max_par = 6
-        elif valor >= 2000 and valor <= 3499:
-            max_par = 8
-        elif valor > 3500 and valor <= 4999:
-            max_par = 10
-        elif valor >= 5000 and valor <= 7500:
-            max_par = 12
-        else:
-            while True: # Permite que apenas o número máximo de parcela seja com parcelas de 400
-                est_valor_parcela = int(valor / max_par)
-                if max_par == 24: # O máximo será de 24 parcelas, em crédito puro!
-                    break
-                if est_valor_parcela > 400:
-                    max_par += 1
-                else:
-                    print(f"Preço: {est_valor_parcela}x{max_par}")
-                    break
-
-        # * A escolha do usuário sobre a quantidade de parcelas
-        while True:
-            try:
-                num_parcelas = int(input(f"Digite quantas parcelas deseja [Máximo de {max_par} parcelas]: "))
-            except KeyboardInterrupt:
-                return False
-            except Exception:
-                print("\033[1;31mDigite apenas números inteiros!\033[m")
+        if max_par:
+            # * Controle de quantidade máxima de vezes
+            if valor <= 100:
+                max_par = 1
+            elif valor >= 100 and valor <= 199:
+                max_par = 2
+            elif valor >= 200 and valor <= 499:
+                max_par = 3
+            elif valor >= 500 and valor <= 999:
+                max_par = 5
+            elif valor >= 1000 and valor <= 1999:
+                max_par = 6
+            elif valor >= 2000 and valor <= 3499:
+                max_par = 8
+            elif valor > 3500 and valor <= 4999:
+                max_par = 10
+            elif valor >= 5000 and valor <= 7500:
+                max_par = 12
             else:
-                if num_parcelas > 0 and num_parcelas <= max_par:
-                    valor_parcela = round(valor / num_parcelas, 2) 
-                    print(f"\033[1;33mValor de cada parcela [{num_parcelas}x]: {ContaBancaria._numero_em_reais(valor_parcela)}\033[m")
-                    confirmar = str(input("Aperte enter ou [N - para Cancelar]: "))
-                    if len(confirmar) == 0:
+                while True: # Permite que apenas o número máximo de parcela seja com parcelas de 400
+                    est_valor_parcela = int(valor / max_par)
+                    if max_par == 24: # O máximo será de 24 parcelas, em crédito puro!
                         break
-                else:
-                    if num_parcelas > max_par:
-                        print(f"\033[1;31mO número máximo de parcelas({max_par}x) foi ultrapassado!\033[m")
+                    if est_valor_parcela > 400:
+                        max_par += 1
                     else:
-                        print("\033[1;31mNão é permitido usa número negativo!\033[m")
+                        print(f"Preço: {est_valor_parcela}x{max_par}")
+                        break
+        else:
+            # * A escolha do usuário sobre a quantidade de parcelas
+            while True:
+                try:
+                    num_parcelas = int(input(f"Digite quantas parcelas deseja [Máximo de {max_par} parcelas]: "))
+                except KeyboardInterrupt:
+                    return False
+                except Exception:
+                    print("\033[1;31mDigite apenas números inteiros!\033[m")
+                else:
+                    if num_parcelas > 0 and num_parcelas <= max_par:
+                        valor_parcela = round(valor / num_parcelas, 2) 
+                        print(f"\033[1;33mValor de cada parcela [{num_parcelas}x]: {ContaBancaria._numero_em_reais(valor_parcela)}\033[m")
+                        confirmar = str(input("Aperte enter ou [N - para Cancelar]: "))
+                        if len(confirmar) == 0:
+                            break
+                    else:
+                        if num_parcelas > max_par:
+                            print(f"\033[1;31mO número máximo de parcelas({max_par}x) foi ultrapassado!\033[m")
+                        else:
+                            print("\033[1;31mNão é permitido usa número negativo!\033[m")
         return valor_parcela, num_parcelas
     
     def pagar_fatura(self, mes: int=0, ano: int=0):
@@ -482,7 +483,7 @@ class Transacao(ContaBancaria):
             return f'\033[1;32mNão se preocupe, você não tem nenhuma dívida.\033[m\nDívida: {self._divida_ativa}\n'
         
         if not mes:
-            print("Digite abaixo os dados necessário para pagar a fatura desejada")
+            print("Digite abaixo os dados necessário para pagar a fatura desejada.")
             while True:
                 mes = int(input("MÊS [MM]: "))
                 ano = int(input("ANO [AAAA]: "))
@@ -493,26 +494,29 @@ class Transacao(ContaBancaria):
                 else:
                     break
         
-        # print(f"Sua dívida: {self._divida_ativa}")
         # Requerimentos necessários
-
+        valor = ContaBancaria._consultar_total_fatura(mes, ano)
+        if not valor:
+            print("Digite ")
+            return False
+        
         
         # Se o valor for igual a divida, significa que o user usou o método incorreto para operação necessário, isso corrigir esse problema, para ter um registro certo no histórico dela
-        data, mes, ano, horario = ContaBancaria._obter_data_atual()
-        ano = int(str(ano)[2:4])
+        data, mes_atual, ano_atual, horario = ContaBancaria._obter_data_atual()
+        ano_atual = int(str(ano)[2:4])
         
 
         id = ContaBancaria._gerar_id()
         
-        self._registro[2][f'PAR {data} {mes} {ano} {horario}'] = {
+        self._registro[2][f'PAR {data} {mes_atual} {ano_atual} {horario}'] = {
             "Tipo": f"Fatura de ",
             "Valor": f"{ContaBancaria._numero_em_reais(valor)} - {ContaBancaria._numero_em_reais(self._divida_ativa)}",
             "Data": f"{data} {mes} {ano} - {horario}",
             "ID": id,
         }
         
-        self._divida_ativa -= valor # Pagar dívida
-        self._saldo -= valor # Atualizar saldo
+        self._divida_ativa -= Decimal(valor) # Pagar dívida
+        self._saldo -= Decimal(valor) # Atualizar saldo
         
         # Aumentando o limite_atual sem ultrapassa o limite
         self._limite_atual = min(self._limite_atual + valor, self._limite)
@@ -520,5 +524,4 @@ class Transacao(ContaBancaria):
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return f"Saldo: \033[1;31m{self._saldo}\033[m\nDívida total: \033[1;31m{self._divida_ativa}\033[m"
 
-# ContaBancaria._consultar_total_fatura()
 # ContaBancaria._consultar_fatura_nao_paga()

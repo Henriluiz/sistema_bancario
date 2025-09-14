@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import re
-import json
 import uuid
 from inspect import currentframe
 from keyboard import release, press
@@ -135,8 +134,8 @@ class ContaBancaria(Autenticator):
         
         while True:
             try:
-                # num_conta = int(input('Digite o número da conta [Conta nova/Antiga]: ')) # Validando!
-                num_conta = 5
+                num_conta = int(input('Digite o número da conta [Conta nova/Antiga]: ')) # Validando!
+                # num_conta = 5
             except KeyboardInterrupt: # Opção para o usuário cancelar esse login, deixando claro que terá erros se usa essa instância,
             # pois não foi criada.
                 print('\n\033[1;31mNão Use Essa Instância, Retornará ERR0!\033[m')
@@ -173,7 +172,7 @@ class ContaBancaria(Autenticator):
                 self._saldo = 0
                 self._senha = senha
                 self._bloqueado = True
-                self._divida_ativa = 0
+                self._divida_ativa = Decimal(0)
                 self._credito = False # Existência de um cartão de crédito
                 self._registro = [{},{},{},{}]
                 # {0} nome e valor gastado em um item no Crédito
@@ -558,7 +557,6 @@ class ContaBancaria(Autenticator):
                     except KeyError:
                         print("\033[1;31mFatura não encontrada.\033[m")
                         ContaBancaria._consultar_fatura_nao_paga()
-                        # ! Fazer uma função apenas para buscar faturas não pagas e registrar as não pagas, e use aqui a função para alertar o usuário se ele tem ou não conta não pagas
                         try:
                             notificacao_ = self._registro[3][f"PRÓXIMA {abreviar_mes(12)/ano_fatura}"]
                         except KeyError:
@@ -590,44 +588,63 @@ class ContaBancaria(Autenticator):
                         divida_total += Decimal(valor_item)
             return divida_total
     
-    def _consultar_fatura_nao_paga(self, visualizar_npago=False):
-        """ Método que analisa fatura por fatura, atrás de erros de salvamento.
+    def _consultar_fatura_nao_paga(self, visualizar_npago = False):
+        """Analisa fatura por fatura em busca de erros de salvamento.
 
-            Ex: Fatura nov/9999 - Pendete 
-            Uma fatura futura salva como pendente e etc..
-
-            Não retorna nada, já salva tudo através do Self
+        Ex:
+            - Fatura nov/9999 salva como 'PENDENTE'
+            - Fatura futura salva incorretamente como 'ATUAL'
+        
+        Atualiza self._registro diretamente.
         """
+
         cont_atual = 0
         atuais = []
         pendente = []
+
         data, mes_atual, ano_atual, horario = ContaBancaria._obter_data_atual()
-        ano_atual_formatado = int(str(ano_atual)[2:4])
-        
-        # ! Em processo
-        for item in self._registro[3]:
-            titulo = str(item).split(" ")[0]
-            mes, ano = str(item).split(" ")[1].split("/")
+        ano_atual = int(ano_atual)
+
+        # copia lista de chaves para evitar erro ao modificar o dicionário no loop
+        chaves = list(self._registro[3].keys())
+
+        for chave in chaves:
+            titulo, referencia = str(chave).split(" ")
+            mes, ano = referencia.split("/")
+            ano = int(ano)
+            mes_num = numero_do_mes(mes)
+
             if titulo == "PENDENTE":
                 pendente.append(f"{titulo} {mes}/{ano}")
-            if titulo != "PAGA" and titulo != "PENDENTE":
-                mes = numero_do_mes(mes)
-                if mes < mes_atual and int(ano) <= ano_atual_formatado: # Alterar Fatura consta como "Atual" só que muito passado
+
+            elif titulo not in ("PAGA", "PENDENTE"):
+                # Caso seja "ATUAL" mas já passou
+                if mes_num < mes_atual and ano <= ano_atual:
                     cont_atual += 1
-                    atuais.append([titulo, mes, ano])
-                elif (int(ano) > ano_atual_formatado and titulo == "ATUAL") or (int(ano) == ano_atual_formatado and mes > mes_atual and titulo == "ATUAL"): # Excluí Faturas que esteja por alguma causa salvas como "atual" no lugar de "PRÓXIMA"
-                    self._registro[3][f"PRÓXIMA {abreviar_mes(mes)}/{ano}"] = self._registro[3].pop(f"ATUAL {abreviar_mes(mes)}/{ano}")
-        
-        if atuais: # Forma de poupar processamento
-            ordenada = sorted(atuais, key=lambda x: (int(x[2]), x[1]))
-            for item in ordenada:
-                self._registro[3][f"PENDENTE {abreviar_mes(item[1])}/{item[2]}"] = self._registro[3].pop(f"{item[0]} {abreviar_mes(item[1])}/{item[2]}")
-                pendente.append(f"PENDENTE {abreviar_mes(item[1])}/{item[2]}")
+                    atuais.append([titulo, mes_num, ano])
+
+                # Caso seja "ATUAL" mas na verdade é fatura futura
+                elif (ano > ano_atual and titulo == "ATUAL") or (
+                    ano == ano_atual and mes_num > mes_atual and titulo == "ATUAL"
+                ):
+                    self._registro[3][f"PRÓXIMA {abreviar_mes(mes_num)}/{ano}"] = self._registro[3].pop(chave)
+
+        # Reclassifica faturas antigas como pendentes
+        if atuais:
+            ordenada = sorted(atuais, key=lambda x: (x[2], x[1]))
+            for titulo, mes_num, ano in ordenada:
+                chave_antiga = f"{titulo} {abreviar_mes(mes_num)}/{ano}"
+                chave_nova = f"PENDENTE {abreviar_mes(mes_num)}/{ano}"
+                self._registro[3][chave_nova] = self._registro[3].pop(chave_antiga)
+                pendente.append(chave_nova)
 
         if visualizar_npago:
-            print(fatura for fatura in pendente)
-            return True # |Contém fatura pendente - não pago|
-        
+            print(pendente)
+            return bool(pendente)  # True se houver faturas pendentes
+
+        # Se não for para visualizar, não retorna nada (segue a docstring)
+        return None
+
     
     def abrir_chave_pix(self, metodo=1, nova_chave=""):
         """Abrir chave pix
