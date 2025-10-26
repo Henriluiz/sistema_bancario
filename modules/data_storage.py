@@ -1,8 +1,9 @@
-from .models import ContaBancaria, Autenticator
+# from .models import ContaBancaria, Autenticator
 import json
-class DataStorage(ContaBancaria):    
+class DataStorage():    
     @staticmethod
     def carregar():
+        from .models import ContaBancaria, Autenticator
         # ContaBancaria.loading_animation("Carregando..")
         
         try:
@@ -29,7 +30,8 @@ class DataStorage(ContaBancaria):
             return f"\033[1;31mErro ao carregar dados: {e}\033[m"
 
     @classmethod
-    def salvar(cls):
+    def salvar():
+        from .models import ContaBancaria, Autenticator
         # ContaBancaria.loading_animation("Salvando")
         """
         Adiciona um novo dicionário a um arquivo JSON existente.
@@ -39,17 +41,17 @@ class DataStorage(ContaBancaria):
             novo valor (dict): Dicionário a ser adicionado.
         """
         # Criptografando dados sigilosos 
-        for item in cls.contas:
-            for itens in cls.contas[item]:
+        for item in ContaBancaria.contas:
+            for itens in ContaBancaria.contas[item]:
                 if itens == "_senha":
-                    cls.contas[item]["_senha"] = cls.criptografar(cls.contas[item]["_senha"])
+                    ContaBancaria.contas[item]["_senha"] = Autenticator.criptografar(ContaBancaria.contas[item]["_senha"])
                 if itens == "_pix":
-                    pix_info = cls.contas[item]["_pix"]
+                    pix_info = ContaBancaria.contas[item]["_pix"]
                     tipos_pix = ["pix_cpf", "pix_fone", "pix_email","pix_aleatoria"]
                     for tipo in tipos_pix:
                         if tipo in pix_info:
-                            cls.contas[item]["_pix"][tipo] = cls.criptografar(cls.contas[item]["_pix"][tipo])
+                            ContaBancaria.contas[item]["_pix"][tipo] = Autenticator.criptografar(ContaBancaria.contas[item]["_pix"][tipo])
         
-        with open(cls.FILE, 'w', encoding='utf-8') as arquivo:
-            json.dump(cls.contas, arquivo, indent=4, ensure_ascii=False)
+        with open(ContaBancaria.FILE, 'w', encoding='utf-8') as arquivo:
+            json.dump(ContaBancaria.contas, arquivo, indent=4, ensure_ascii=False)
         ContaBancaria.limpar_terminal(True)

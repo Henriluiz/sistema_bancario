@@ -1,5 +1,5 @@
 from fpdf import FPDF
-from models import ContaBancaria
+from .models import ContaBancaria
 
 class PDF(FPDF):
     def header(self):
