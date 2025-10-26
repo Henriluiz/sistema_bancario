@@ -1,12 +1,26 @@
 # app.py
+
+# Importações centralizadas para inicialização do projeto
+
+from modules.models import ContaBancaria, Autenticator
 from modules.transacao import Transacao
+from modules.interface import App
 from modules.data_storage import DataStorage
-from pprint import pprint
+from modules.pdf_gen import PDF
+
+# Inicialização do projeto (exemplo)
+if __name__ == "__main__":
+    # Aqui você pode iniciar a interface, criar contas, etc.
+    # Exemplo:
+    interface = App()
+    interface.mainloop()
+    pass
 
 DataStorage.carregar()
-a = Transacao()
-# print(a.depositar(1000000))
-print(a.desbloquear_conta("A12345@!"))
+# a = Transacao()
+# # print(a.depositar(1000000))
+# print(a.desbloquear_conta("A12345@!"))
+
 # ! E pensa em uma forma de ao imprimir a fatura, não apareça os 
 # ! itens já pagos!
 # print(a._consultar_total_fatura())

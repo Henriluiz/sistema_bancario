@@ -1,4 +1,6 @@
-from models import ContaBancaria, Autenticator, linha, datetime, choices, abreviar_mes, numero_do_mes, Decimal
+from .models import ContaBancaria
+from models import DataStorage, linha, abreviar_mes, numero_do_mes, Decimal
+
 
 class Transacao(ContaBancaria):
     def __init__(self):

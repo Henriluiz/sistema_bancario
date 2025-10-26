@@ -1,3 +1,4 @@
+# --- Importações organizadas ---
 import os
 import sys
 import time
@@ -12,6 +13,10 @@ from pathlib import Path
 from random import randint, choices
 from datetime import datetime
 from decimal import Decimal
+
+# Alteração: importação relativa do DataStorage
+from .data_storage import DataStorage
+# --- Fim das alterações ---
 
 class Autenticator:
     chaves_especiais = {
@@ -120,68 +125,80 @@ class Autenticator:
         return False
 
 
-class ContaBancaria(Autenticator):
+class ContaBancaria(Autenticator, DataStorage):
     FILE = Path(__file__).parent / 'dados.json'
     taxa_juros = 1.01 # NUNCA, menor que 1.0
 
     contas = {}
     
-    def __init__(self, num_conta="", ):
+    def __init__(self):
+        ...
+    
+    def login(self, num_conta="", senha=""):
         linha("Iniciador de Contas!")
         
         antigo = None
         sair = False
         
-        while True:
-            try:
-                num_conta = int(input('Digite o número da conta [Conta nova/Antiga]: ')) # Validando!
-                # num_conta = 5
-            except KeyboardInterrupt: # Opção para o usuário cancelar esse login, deixando claro que terá erros se usa essa instância,
-            # pois não foi criada.
-                print('\n\033[1;31mNão Use Essa Instância, Retornará ERR0!\033[m')
-                print("Saindo da conta")
-                sair = True
-                break
-            except Exception:
-                print("\033[1;31m<<< Digite apenas números nessa entrada >>>\033[m")# Apenas para reiniciar o loop
-            else:
-                break
-            
-        if not sair: # Criando o cadastro, se quiser sair e ele pulará essa parte
-            
+        arquivo_mestre = sys.argv[0].split("\\")[-1]
+        if arquivo_mestre in "interface.py" or arquivo_mestre in "app.py": # ! Validação de entrada e interação completamente feita por interface.
             num_conta = str(num_conta)
             antigo = ContaBancaria.conta_existente(self,num_conta, senha="a12345@!")
-            
-            if antigo == "Conta nova" or not antigo:
-                linha("Conta nova..")
-                
-                self._numero_conta = ContaBancaria.criar_num()
-                print(f'Número de Conta atualizado: {self._numero_conta}')
-                
-                
-                # Validação de Senha!
-                # senha = str(input('Crie uma senha forte [Com 2 ou mais números e caracteres especiais]: '))
-                senha = "a12345@!"
-                while not ContaBancaria.validar_senha(senha):
-                    senha = str(input('Digite a senha novamente: '))
-                
-                self._nome = ContaBancaria._validar_nome_completo(input("Nome completo: "))
-                while self._nome == False:
-                    self._nome = ContaBancaria._validar_nome_completo(input("Nome \033[1;31mcompleto\033[m: "))
-                self._pix = {}
-                self._saldo = 0
-                self._senha = senha
-                self._bloqueado = True
-                self._divida_ativa = Decimal(0)
-                self._credito = False # Existência de um cartão de crédito
-                self._registro = [{},{},{},{}]
-                # {0} nome e valor gastado em um item no Crédito
-                # {1} NOME E VALOR GASTADO EM UM ITEM DEBITO
-                # {2} qual parcelas foram pagos e pagamento quitado 
-                # {3} Faturas anteriores, passadas e futura (Virada de cartão dia 7)
             ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
+            print(antigo)
+        else:
+            print("ENTREI___________________-")
+            while True:
+                try:
+                    num_conta = int(input('Digite o número da conta [Conta nova/Antiga]: ')) # Validando!
+                    # num_conta = 5
+                except KeyboardInterrupt: # Opção para o usuário cancelar esse login, deixando claro que terá erros se usa essa instância,
+                # pois não foi criada.
+                    print('\n\033[1;31mNão Use Essa Instância, Retornará ERR0!\033[m')
+                    print("Saindo da conta")
+                    sair = True
+                    break
+                except Exception:
+                    print("\033[1;31m<<< Digite apenas números nessa entrada >>>\033[m")# Apenas para reiniciar o loop
+                else:
+                    break
+                
+            if not sair: # Criando o cadastro, se quiser sair e ele pulará essa parte
+                
+                num_conta = str(num_conta)
+                antigo = ContaBancaria.conta_existente(self,num_conta, senha="a12345@!")
+                
+                if antigo == "Conta nova" or not antigo:
+                    linha("Conta nova..")
+                    
+                    self._numero_conta = ContaBancaria.criar_num()
+                    print(f'Número de Conta atualizado: {self._numero_conta}')
+                    
+                    
+                    # Validação de Senha!
+                    # senha = str(input('Crie uma senha forte [Com 2 ou mais números e caracteres especiais]: '))
+                    senha = "a12345@!"
+                    while not ContaBancaria.validar_senha(senha):
+                        senha = str(input('Digite a senha novamente: '))
+                    
+                    self._nome = ContaBancaria._validar_nome_completo(input("Nome completo: "))
+                    while self._nome == False:
+                        self._nome = ContaBancaria._validar_nome_completo(input("Nome \033[1;31mcompleto\033[m: "))
+                    self._pix = {}
+                    self._saldo = 0
+                    self._senha = senha
+                    self._bloqueado = True
+                    self._divida_ativa = Decimal(0)
+                    self._credito = False # Existência de um cartão de crédito
+                    self._registro = [{},{},{},{}]
+                    # {0} nome e valor gastado em um item no Crédito
+                    # {1} NOME E VALOR GASTO EM UM ITEM DEBITO
+                    # {2} qual parcelas foram pagos e pagamento quitado 
+                    # {3} Faturas anteriores, passadas e futura (Virada de cartão dia 7)
+                ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
 
-
+    
+    
     @property
     def numero_conta(self):
         return self._numero_conta

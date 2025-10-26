@@ -1,4 +1,4 @@
-from modules.models import ContaBancaria, Autenticator
+from .models import ContaBancaria, Autenticator
 import json
 class DataStorage(ContaBancaria):    
     @staticmethod
