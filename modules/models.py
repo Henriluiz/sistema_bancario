@@ -139,7 +139,7 @@ class ContaBancaria(Autenticator, DataStorage):
         
         antigo = None
         sair = False
-        
+        print(num_conta, senha)
         arquivo_mestre = sys.argv[0].split("\\")[-1]
         if arquivo_mestre in "interface.py" or arquivo_mestre in "app.py": # ! Validação de entrada e interação completamente feita por interface.
             num_conta = str(num_conta)
@@ -235,6 +235,18 @@ class ContaBancaria(Autenticator, DataStorage):
             self._numero_conta = valor
             return False
 
+    @property
+    def status(self):
+        return self.status
+    
+    @status.setter
+    def status(self,passe, novo_valor):
+        if passe == "0SNQ8=sY6k`QK(:M;uT":
+            self.status = novo_valor
+        else:
+            print("Acesso negado, saia daqui!") # > Tentativa de Segurança
+    
+    
     @property
     def credito(self):
         return self._credito

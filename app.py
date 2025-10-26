@@ -36,7 +36,7 @@ DataStorage.carregar()
 # print(a.compra_com_debito("Chuteira", 5100))
 # print(a.compra_com_deb))
 # print(a.compra_com_debito("Meião", 50))
-# print(a.transferir("5db2b93c-49a8-4271-a222-b00ef36d204c", 50))
+# print(a.transferir("5db2b93c-49a8-4271-a222-b00ef36d204c", 50))1
 # print(a.consultar_extrato())
 # print(a.solicitar_cartao_credito())
 # print(a.compra_com_credito("Chuteira", 4203))

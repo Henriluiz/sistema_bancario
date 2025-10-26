@@ -28,7 +28,7 @@ class Transacao(ContaBancaria):
         ContaBancaria.contas[self._numero_conta] = {chave: valor for chave, valor in self.__dict__.items() if chave != "_numero_conta"}
         return f"Saldo Atualizado: \033[1;33m{self._saldo}\033[m"
 
-    
+   
     def transferir(self, conta_destino="", valor_de_transferencia=0.0):
         """Ao inserir um conta irá transferir o dinheiro para outra conta com uma taxa de 9%,
         ou se inserir a chave pix irá transferir o dinheiro para conta da pessoa sem taxa 
